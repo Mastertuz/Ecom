@@ -1,4 +1,4 @@
-import { HeartIcon, HomeIcon, ShoppingBasketIcon } from "lucide-react";
+import { HeartIcon, ShoppingBasketIcon } from "lucide-react";
 import Link from "next/link";
 import { auth, signIn, signOut } from "../../../../auth";
 import { Button } from "@/components/ui/button";
@@ -16,12 +16,12 @@ async function Header() {
         <ul className="flex justify-between items-center gap-4">
           <li className="flex items-center">
             <Link href={"/likes"} className="flex items-center gap-1">
-              <HeartIcon size={24} color="black" />
+              <HeartIcon size={24}/>
             </Link>
           </li>
           <li>
             <Link href={"/cart"} className="flex items-center gap-1">
-              <ShoppingBasketIcon size={24} color="black" />
+              <ShoppingBasketIcon size={24} />
             </Link>
           </li>
         </ul>
