@@ -7,7 +7,7 @@ import UserAvatar from "./UserAvatar";
 async function Header() {
     const session = await auth();
   return (
-    <header>
+    <header className="w-full bg-[#0a0a0a] sticky py-4 top-0 mb-6 z-50 ">
       <nav className="flex justify-between items-center">
         <Link href={"/"}>
           <h1 className="text-2xl font-bold">E-commerce Shop</h1>
@@ -34,7 +34,7 @@ async function Header() {
                 }}
                 className="cursor-pointer"
                 >
-                Sign out
+                Выйти
                 </Button>
             ) : (
                 <Button
@@ -44,7 +44,7 @@ async function Header() {
                 }}
                 className="cursor-pointer"
                 >
-                Sign in
+                Войти
                 </Button>
             )}
        

@@ -1,24 +1,13 @@
-import { PrismaClient } from "@/generated/prisma";
-import { Product } from "../../typings";
+'use server'
+import { prisma } from "@/lib/prisma";
+import {  ProductCreateInput } from "../../typings";
+import { revalidatePath } from "next/cache";
 
-const prisma = new PrismaClient()
 
-export const createProduct = async (productData:Product) => {
+export const createProduct = async (productData:ProductCreateInput) => {
   try{
-
-   let existingProduct = await prisma.product.findUnique({
-    where:{
-      id:productData.id
-    }
-   })
-   
-    if(existingProduct){
-      throw new Error("Product with this ID already exists");
-    }
-  
       const product = await prisma.product.create({
         data: {
-          id: productData.id,
           name: productData.name,
           description: productData.description || '',
           price: productData.price,
@@ -26,6 +15,7 @@ export const createProduct = async (productData:Product) => {
         },
       });
   
+      revalidatePath('/')
       return product;
 
   }catch(err){
@@ -39,7 +29,9 @@ export const getProductById = async (id: string) => {
 };
 
 export const getAllProducts = async () => {
-  return await prisma.product.findMany();
+  return await prisma.product.findMany({
+    orderBy:{ createdAt: 'desc'}
+  });
 };
 
 export const updateProduct = async (id: string, data: {
