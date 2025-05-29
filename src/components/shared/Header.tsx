@@ -1,6 +1,6 @@
 import { HeartIcon, ShoppingBasketIcon } from "lucide-react";
 import Link from "next/link";
-import { auth, signIn, signOut } from "../../../../auth";
+import { auth, signIn, signOut } from "../../../auth";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "./UserAvatar";
 
