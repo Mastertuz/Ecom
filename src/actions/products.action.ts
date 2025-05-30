@@ -43,7 +43,20 @@ export const getAllProducts = async () => {
   });
 };
 
+export const updateProduct = async (id: string, data: ProductCreateInput) => {
+  try {
+    const updated = await prisma.product.update({
+      where: { id },
+      data,
+    });
 
+    revalidatePath('/');
+    return updated;
+  } catch (err) {
+    console.error('Error updating product:', err);
+    throw new Error('Failed to update product');
+  }
+};
 
 export const deleteProduct = async (id: string) => {
   return await prisma.product.delete({ where: { id } });

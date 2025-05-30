@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Product } from '../../../typings';
 import { useRouter } from 'next/navigation';
+import EditProductDialog from './EditProductForm';
 
 type Props = {
   products: Product[];
@@ -92,15 +93,7 @@ export default function ProductTable({ products }: Props) {
               {new Date(product.updatedAt).toLocaleDateString()}
             </TableCell>
             <TableCell className="space-x-2">
-              <Button
-                variant="link"
-                className="text-blue-600"
-                onClick={() =>
-                  console.log(`Редактировать товар с ID: ${product.id}`)
-                }
-              >
-                Изменить
-              </Button>
+             <EditProductDialog product={product} />
               <Button
                 variant="link"
                 className="text-red-600"
