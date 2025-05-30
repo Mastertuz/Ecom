@@ -51,12 +51,18 @@ model Session {
   updatedAt DateTime @updatedAt
 } 
 
+enum Status {
+  Активно
+  Неактивно
+}
+
 model Product {
   id          String   @id @default(cuid())
   name        String
   description String?
   price       Float
   imageUrl    String
+  status      Status   @default(Активно)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

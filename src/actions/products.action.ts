@@ -1,26 +1,25 @@
-'use server'
-import { prisma } from "@/lib/prisma";
-import {  ProductCreateInput } from "../../typings";
-import { revalidatePath } from "next/cache";
+'use server';
+import { prisma } from '@/lib/prisma';
+import { ProductCreateInput } from '../../typings';
+import { revalidatePath } from 'next/cache';
 
+export const createProduct = async (productData: ProductCreateInput) => {
+  try {
+    const product = await prisma.product.create({
+      data: {
+        name: productData.name,
+        description: productData.description || '',
+        price: productData.price,
+        imageUrl: productData.imageUrl || '',
+        status: productData.status || 'Активно',
+      },
+    });
 
-export const createProduct = async (productData:ProductCreateInput) => {
-  try{
-      const product = await prisma.product.create({
-        data: {
-          name: productData.name,
-          description: productData.description || '',
-          price: productData.price,
-          imageUrl: productData.imageUrl||'', 
-        },
-      });
-  
-      revalidatePath('/')
-      return product;
-
-  }catch(err){
-    console.error("Error creating product:", err);
-    throw new Error("Failed to create product");
+    revalidatePath('/');
+    return product;
+  } catch (err) {
+    console.error('Error creating product:', err);
+    throw new Error('Failed to create product');
   }
 };
 
@@ -30,20 +29,21 @@ export const getProductById = async (id: string) => {
 
 export const getAllProducts = async () => {
   return await prisma.product.findMany({
-    orderBy:{ createdAt: 'desc'}
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      price: true,
+      imageUrl: true,
+      createdAt: true,
+      updatedAt: true,
+      status: true,
+    },
   });
 };
 
-export const updateProduct = async (id: string, data: {
-  name?: string;
-  description?: string;
-  price?: number;
-}) => {
-  return await prisma.product.update({
-    where: { id },
-    data,
-  });
-};
+
 
 export const deleteProduct = async (id: string) => {
   return await prisma.product.delete({ where: { id } });

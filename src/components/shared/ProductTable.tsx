@@ -1,62 +1,118 @@
 'use client';
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import { Product } from '../../../typings';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   products: Product[];
 };
 
 export default function ProductTable({ products }: Props) {
+  const router = useRouter();
+
+  const handleDelete = async (id: string) => {
+    const confirmed = confirm('Вы уверены, что хотите удалить этот товар?');
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch('/api/products', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (res.ok) {
+        router.refresh(); // Обновить список после удаления
+      } else {
+        let errorMessage = 'Не удалось удалить товар';
+        try {
+          const data = await res.json();
+          errorMessage = data?.error || errorMessage;
+        } catch {
+          // тело может быть пустым
+        }
+        alert(`Ошибка: ${errorMessage}`);
+      }
+    } catch (err) {
+      console.error('Ошибка при удалении:', err);
+      alert('Произошла ошибка при удалении товара.');
+    }
+  };
+
   return (
-    <table className="min-w-full table-auto text-left border">
-      <thead>
-        <tr>
-          <th className="px-4 py-2">Изображение</th>
-          <th className="px-4 py-2">Название</th>
-          <th className="px-4 py-2">Статус</th>
-          <th className="px-4 py-2">Цена</th>
-          <th className="px-4 py-2">Обновлено</th>
-          <th className="px-4 py-2">Действия</th>
-          <th className="px-4 py-2">id</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Изображение</TableHead>
+          <TableHead>Название</TableHead>
+          <TableHead>Статус</TableHead>
+          <TableHead>Цена</TableHead>
+          <TableHead>Обновлено</TableHead>
+          <TableHead>Действия</TableHead>
+          <TableHead>ID</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
         {products.map((product) => (
-          <tr key={product.id} className="border-t">
-            <td className="p-4">
+          <TableRow key={product.id}>
+            <TableCell>
               <img
-                src={product.imageUrl}
+                src={product.imageUrl ?? '/default-image.png'}
                 alt={product.name}
                 className="w-32 h-24 object-cover rounded"
               />
-            </td>
-            <td className="p-4">
-              <span>{product.name}</span>
-            </td>
-            <td className="p-4">
-              <span className="bg-green-400 text-black text-sm px-2 py-1 rounded">
-                Активно
+            </TableCell>
+            <TableCell>{product.name}</TableCell>
+            <TableCell>
+              <span
+                className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                  product.status === 'Активно'
+                    ? 'bg-green-500 text-black ring-green-600/20'
+                    : 'bg-red-500 text-black ring-gray-600/20'
+                }`}
+              >
+                {product.status}
               </span>
-            </td>
-            <td className="p-4 font-semibold">${product.price.toFixed(2)}</td>
-            <td className="p-4 text-sm">
+            </TableCell>
+            <TableCell className="font-semibold">
+              ${product.price.toFixed(2)}
+            </TableCell>
+            <TableCell>
               {new Date(product.updatedAt).toLocaleDateString()}
-            </td>
-            <td className="p-4 space-x-2">
-              <button
-                className="cursor-pointer text-blue-600 hover:underline"
-                onClick={() => console.log(`Редактировать товар с ID: ${product.id}`)}
+            </TableCell>
+            <TableCell className="space-x-2">
+              <Button
+                variant="link"
+                className="text-blue-600"
+                onClick={() =>
+                  console.log(`Редактировать товар с ID: ${product.id}`)
+                }
               >
                 Изменить
-              </button>
-              <button className="cursor-pointer text-red-600 hover:underline">
+              </Button>
+              <Button
+                variant="link"
+                className="text-red-600"
+                onClick={() => handleDelete(product.id)}
+              >
                 Удалить
-              </button>
-            </td>
-            <td className="px-4 py-2 text-sm">{product.id}</td>
-          </tr>
+              </Button>
+            </TableCell>
+            <TableCell>{product.id}</TableCell>
+          </TableRow>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   );
 }

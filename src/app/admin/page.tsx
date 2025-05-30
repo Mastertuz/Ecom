@@ -1,15 +1,14 @@
-import { createProduct, getAllProducts } from '@/actions/products.action';
-import AddProductForm from '@/components/shared/AddProductForm';
-import ProductTable from '@/components/shared/ProductTable';
+import { getAllProducts } from '@/actions/products.action';
+import AdminPageContent from '@/components/shared/AdminPageContent';
 
-
-export default async function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: { status?: string };
+}) {
   const products = await getAllProducts();
-
-  return (
-    <main className="p-12">
-      <AddProductForm/>
-      <ProductTable products={products} />
-    </main>
-  );
+  
+  const status = searchParams?.status || '';
+  
+  return <AdminPageContent searchParams={{ status }} products={products} />;
 }
