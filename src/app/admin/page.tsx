@@ -10,5 +10,5 @@ export default async function AdminPage({
   
   const status = searchParams?.status || '';
   
-  return <AdminPageContent searchParams={{ status }} products={products} />;
+  return <AdminPageContent products={products} />;
 }

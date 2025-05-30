@@ -1,57 +1,49 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AddProductForm from '@/components/shared/AddProductForm';
 import ProductTable from '@/components/shared/ProductTable';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { Product } from '../../../typings';
 
-export default function AdminPageContent({
-  searchParams,
-  products,
-}: {
-  searchParams: { status?: string };
-  products: Product[];
-}) {
+export default function AdminPageContent({ products }: { products: Product[] }) {
   const router = useRouter();
-  const searchParamsClient = useSearchParams();
-  const statusParam = searchParams?.status || searchParamsClient.get('status') || '';
-  const activeTab = 
-    statusParam === 'active' 
-      ? 'Активно' 
-      : statusParam === 'inactive' 
-        ? 'Неактивно' 
+  const searchParams = useSearchParams();
+  const status = searchParams.get('status');
+
+  const activeTab =
+    status === 'active'
+      ? 'Активно'
+      : status === 'inactive'
+        ? 'Неактивно'
         : 'ВСЕ';
 
-  const filteredProducts = products.filter(product => {
-    if (activeTab === 'ВСЕ') return true;
-    return product.status === activeTab;
-  });
+  const getFiltered = (tab: string) => {
+    if (tab === 'ВСЕ') return products;
+    return products.filter(product => product.status === tab);
+  };
 
   const handleTabChange = (value: string) => {
-    const status = 
-      value === 'ВСЕ' 
-        ? '' 
-        : value === 'Активно' 
-          ? 'active' 
-          : 'inactive';
-          
-    const params = new URLSearchParams(window.location.search);
-    if (status) {
-      params.set('status', status);
+    const params = new URLSearchParams(searchParams.toString());
+    const newStatus =
+      value === 'Активно'
+        ? 'active'
+        : value === 'Неактивно'
+          ? 'inactive'
+          : '';
+
+    if (newStatus) {
+      params.set('status', newStatus);
     } else {
       params.delete('status');
     }
+
     router.push(`/admin?${params.toString()}`);
   };
 
   return (
     <main className="p-12 space-y-6">
-      <Tabs 
-        defaultValue={activeTab} 
-        value={activeTab}
-        onValueChange={handleTabChange}
-      >
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
         <div className="flex items-center justify-between">
           <TabsList className="bg-muted p-1 rounded-md">
             <TabsTrigger value="ВСЕ" className="px-4 py-2 cursor-pointer">
@@ -64,19 +56,24 @@ export default function AdminPageContent({
               Неактивно
             </TabsTrigger>
           </TabsList>
-            <AddProductForm/>
+          <AddProductForm />
         </div>
-        <TabsContent value="ВСЕ">
-          <ProductTable products={activeTab === 'ВСЕ' ? filteredProducts : []} />
-        </TabsContent>
-        <TabsContent value="Активно">
-          <ProductTable products={activeTab === 'Активно' ? filteredProducts : []} />
-        </TabsContent>
-        <TabsContent value="Неактивно">
-          <ProductTable products={activeTab === 'Неактивно' ? filteredProducts : []} />
-        </TabsContent>
-      </Tabs>      
-  
+
+        {['ВСЕ', 'Активно', 'Неактивно'].map(tab => {
+          const filtered = getFiltered(tab);
+          return (
+            <TabsContent key={tab} value={tab}>
+              {filtered.length > 0 ? (
+                <ProductTable products={filtered} />
+              ) : (
+                <div className="text-muted-foreground text-center py-8 text-sm">
+                  Нет товаров
+                </div>
+              )}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
     </main>
   );
 }

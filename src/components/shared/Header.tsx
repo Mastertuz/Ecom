@@ -25,31 +25,7 @@ async function Header() {
             </Link>
           </li>
         </ul>
-        <div className="flex gap-2">
-            {session?.user ? (
-                <Button
-                onClick={async () => {
-                    "use server";
-                    await signOut();
-                }}
-                className="cursor-pointer"
-                >
-                Выйти
-                </Button>
-            ) : (
-                <Button
-                onClick={async () => {
-                    "use server";
-                    await signIn("google");
-                }}
-                className="cursor-pointer"
-                >
-                Войти
-                </Button>
-            )}
-       
-          <UserAvatar />
-        </div>
+        
       </nav>
     </header>
   );
