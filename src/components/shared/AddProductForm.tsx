@@ -26,12 +26,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createProduct } from "@/actions/products.action";
 import { ProductCreateInput } from "../../../typings";
 import { PlusCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const productSchema = z.object({
   name: z.string().min(1, "Название обязательно"),
   description: z.string().optional(),
   price: z.coerce.number().min(0, "Цена должна быть положительной"),
   imageUrl: z.string().url("Введите корректный URL изображения"),
+  stock: z.coerce.number().min(1, "Количество товара не может быть меньше 1"),
+  status: z.enum(["Активно", "Неактивно"]),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
@@ -44,13 +53,14 @@ export default function AddProductDialog() {
       description: "",
       imageUrl: "",
       price: 0,
+      stock: 1,
+      status:'Активно'
     },
   });
 
   const onSubmit = async (data: ProductCreateInput) => {
     try {
       const product = await createProduct(data);
-      console.log("Создан продукт:", product);
       form.reset();
     } catch (err) {
       console.error("Ошибка при создании:", err);
@@ -60,7 +70,7 @@ export default function AddProductDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="cursor-pointer"  variant="outline">
+        <Button className="cursor-pointer" variant="outline">
           <span> Добавить товар</span>
           <PlusCircle className="h-4 w-4" />
         </Button>
@@ -85,6 +95,31 @@ export default function AddProductDialog() {
                   <FormControl>
                     <Input placeholder="Введите название товара" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Статус</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите статус" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Активно">Активно</SelectItem>
+                      <SelectItem value="Неактивно">Неактивно</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -118,6 +153,25 @@ export default function AddProductDialog() {
                       type="number"
                       className="appearance-none"
                       placeholder="Введите цену"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="stock"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Количество</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      className="appearance-none"
+                      placeholder="Введите количество"
                       {...field}
                     />
                   </FormControl>

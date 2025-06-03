@@ -6,7 +6,7 @@ type Props = {
   product: Product;
 };
 function ProductCard({ product }: Props) {
-  const isOutOfStock = false;
+  const isOutOfStock = product.stock!=null && product.stock<=0;
   return (
     <Link
       href={``}
@@ -41,7 +41,7 @@ function ProductCard({ product }: Props) {
         </h2>
 
         <p className="mt-2 text-sm text-white font-extrabold">
-          ${product.price.toFixed(2)}
+          {product.price} ₽
         </p>
       </div>
     </Link>

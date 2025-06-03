@@ -28,8 +28,7 @@ async function Searchpage({
 
 
 return (
-  <div className="flex flex-col items-center justify-top min-h-screen  p-4">
-    <div className="p-8 rounded-lg w-full ">
+  <div className="max-w-[1536px] mx-auto ">
       <h1 className="text-3xl font-bold mb-12 text-center text-white">
         Товары по запросу : {query}
       </h1>
@@ -38,7 +37,6 @@ return (
         <ProductCard key={product?.id} product={product}/>
       ))}
       </div>
-    </div>
   </div>
 );
 }

@@ -27,12 +27,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Product } from '../../../typings';
 import { updateProduct } from '@/actions/products.action';
 import { useRef } from 'react';
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 const productSchema = z.object({
   name: z.string().min(1, 'Название обязательно'),
   description: z.string().optional(),
   price: z.coerce.number().min(0, 'Цена должна быть положительной'),
   imageUrl: z.string().url('Введите корректный URL изображения'),
+  stock: z.coerce.number().min(1, "Количество не может быть меньше 1"),
+  status: z.enum(["Активно", "Неактивно"]),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
@@ -49,15 +57,15 @@ export default function EditProductDialog({ product }: Props) {
       description: product.description || '',
       imageUrl: product.imageUrl || '',
       price: product.price,
+      stock:product.stock,
+      status:product.status
     },
   });
-
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const onSubmit = async (data: ProductFormData) => {
     try {
       await updateProduct(product.id, data);
-      // Закрываем диалог только при успешном обновлении
       closeRef.current?.click();
     } catch (err) {
       console.error('Ошибка при обновлении товара:', err);
@@ -96,6 +104,30 @@ export default function EditProductDialog({ product }: Props) {
             />
             <FormField
               control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Статус</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите статус" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Активно">Активно</SelectItem>
+                      <SelectItem value="Неактивно">Неактивно</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
@@ -113,6 +145,19 @@ export default function EditProductDialog({ product }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Цена</FormLabel>
+                  <FormControl>
+                    <Input type="number" className="appearance-none" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="stock"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Количество</FormLabel>
                   <FormControl>
                     <Input type="number" className="appearance-none" {...field} />
                   </FormControl>

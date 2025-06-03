@@ -66,4 +66,5 @@ model Product {
   status      Status   @default(Активно)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  stock       Int      @default(1)
 }

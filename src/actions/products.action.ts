@@ -37,7 +37,6 @@ export const getProductsByName = async(query:string)=>{
       }
     }
   })
-  console.log(products)
   return products
 }
 
@@ -52,6 +51,7 @@ export const getAllProducts = async () => {
       imageUrl: true,
       createdAt: true,
       updatedAt: true,
+      stock:true,
       status: true,
     },
   });

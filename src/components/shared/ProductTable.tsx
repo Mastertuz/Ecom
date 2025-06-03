@@ -50,7 +50,6 @@ export default function ProductTable({ products }: Props) {
       alert('Произошла ошибка при удалении товара.');
     }
   };
-
   return (
     <Table>
       <TableHeader>
@@ -61,6 +60,7 @@ export default function ProductTable({ products }: Props) {
           <TableHead>Цена</TableHead>
           <TableHead>Обновлено</TableHead>
           <TableHead>Действия</TableHead>
+          <TableHead>Количество</TableHead>
           <TableHead>ID</TableHead>
         </TableRow>
       </TableHeader>
@@ -89,7 +89,7 @@ export default function ProductTable({ products }: Props) {
               </span>
             </TableCell>
             <TableCell className="font-semibold">
-              ${product.price.toFixed(2)}
+              {product.price} ₽
             </TableCell>
             <TableCell>
               {new Date(product.updatedAt).toLocaleDateString()}
@@ -104,6 +104,7 @@ export default function ProductTable({ products }: Props) {
                 Удалить
               </Button>
             </TableCell>
+            <TableCell>{product.stock}</TableCell>
             <TableCell>{product.id}</TableCell>
           </TableRow>
         ))}
