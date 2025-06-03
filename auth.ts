@@ -1,19 +1,20 @@
+
 import { v4 as uuid } from "uuid";
 import { encode as defaultEncode } from "next-auth/jwt";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import GitHub from "next-auth/providers/github";
 import { prisma } from "@/lib/prisma";
 import { schema } from "@/lib/shema";
-
+import bcrypt from "bcryptjs";
+import Google from 'next-auth/providers/google'
 const adapter = PrismaAdapter(prisma);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter,
   providers: [
-    GitHub,
+    Google,
     Credentials({
       credentials: {
         email: {},
@@ -22,14 +23,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         const validatedCredentials = schema.parse(credentials);
 
-        const user = await prisma.user.findFirst({
-          where: {
-            email: validatedCredentials.email,
-            password: validatedCredentials.password,
-          },
+        const user = await prisma.user.findUnique({
+          where: { email: validatedCredentials.email },
         });
 
-        if (!user) {
+        if (!user || !user.password) {
+          throw new Error("Invalid credentials.");
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          validatedCredentials.password,
+          user.password
+        );
+
+        if (!isPasswordValid) {
           throw new Error("Invalid credentials.");
         }
 

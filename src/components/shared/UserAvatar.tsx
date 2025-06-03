@@ -8,7 +8,7 @@ export default async function UserAvatar() {
   return (
     <div className="cursor-pointer hover:opacity-80 transition-opacity">
       <img src={session.user.image ?? undefined} 
-      className="size-10 rounded-full" 
+      className="size-10 rounded-full object-cover" 
       alt="User Avatar" />
     </div>
   )
