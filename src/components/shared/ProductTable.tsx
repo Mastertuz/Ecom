@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Product } from '../../../typings';
 import { useRouter } from 'next/navigation';
 import EditProductDialog from './EditProductForm';
+import Image from 'next/image';
 
 type Props = {
   products: Product[];
@@ -34,14 +35,13 @@ export default function ProductTable({ products }: Props) {
       });
 
       if (res.ok) {
-        router.refresh(); // Обновить список после удаления
+        router.refresh();
       } else {
         let errorMessage = 'Не удалось удалить товар';
         try {
           const data = await res.json();
           errorMessage = data?.error || errorMessage;
         } catch {
-          // тело может быть пустым
         }
         alert(`Ошибка: ${errorMessage}`);
       }
@@ -68,10 +68,12 @@ export default function ProductTable({ products }: Props) {
         {products.map((product) => (
           <TableRow key={product.id}>
             <TableCell>
-              <img
-                src={product.imageUrl ?? '/default-image.png'}
+              <Image
+                src={product?.imageUrl ?? ''}
                 alt={product.name}
-                className="w-32 h-24 object-cover rounded"
+                width={128}
+                height={96}
+                className="w-32 h-24 object-contain rounded"
               />
             </TableCell>
             <TableCell>{product.name}</TableCell>
