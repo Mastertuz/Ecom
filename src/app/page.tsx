@@ -8,7 +8,7 @@ export default async function Home() {
   const products = await getAllProducts();
   if (!session) redirect("/sign-in");
   return (
-    <main className="max-w-[1536px] mx-auto">
+    <main className="max-w-[1536px] mx-auto ">
 
       <div className="grid grid-cols-2 max-[380px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
       {products?.map((product) => (
