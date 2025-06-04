@@ -10,11 +10,7 @@ interface AddToBasketButtonProps {
 }
 
 function AddToCartButton({ product, disabled }: AddToBasketButtonProps) {
-//   const { addItem, removeItem, getItemCount } = useBasketStore();
-//   const itemCount = getItemCount(product.id);
-//   const stock = product.stock ?? 0;
-//   const isAddDisabled = disabled || itemCount >= stock;
-
+  const isAddDisabled = false
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -23,13 +19,15 @@ function AddToCartButton({ product, disabled }: AddToBasketButtonProps) {
   if (!isClient) {
     return null;
   }
-
+  const removeItem = ()=>(console.log('goida'))
+  const addItem= ()=>(console.log('goida'))
+  const itemCount =0
   return (
     <div className="flex items-center space-x-2 max-[380px]:space-x-1">
-      {/* <button
-        onClick={() => removeItem(product.id)}
+      <button
+        onClick={() => removeItem()}
         className={`w-8 h-8 max-[380px]:size-6  rounded-full flex items-center justify-center transition-colors duration-200 ${
-          itemCount === 0
+          itemCount < 1
             ? "bg-gray-100 cursor-not-allowed"
             : "bg-gray-200 cursor-pointer hover:bg-gray-300"
         }`}
@@ -45,7 +43,7 @@ function AddToCartButton({ product, disabled }: AddToBasketButtonProps) {
       </button>
       <span className="w-8 text-center text-white font-semibold">{itemCount}</span>
       <button
-        onClick={() => addItem(product)}
+        onClick={() => addItem()}
         className={`w-8 h-8 max-[380px]:size-6 rounded-full flex items-center justify-center transition-colors duration-200 ${
           isAddDisabled
             ? "bg-gray-400 cursor-not-allowed"
@@ -54,7 +52,7 @@ function AddToCartButton({ product, disabled }: AddToBasketButtonProps) {
         disabled={isAddDisabled}
       >
         <span className="text-xl font-bold text-white">+</span>
-      </button> */}
+      </button>
     </div>
   );
 }

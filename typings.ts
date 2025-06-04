@@ -18,3 +18,20 @@ export type ProductCreateInput = {
   imageUrl: string;
   status?: 'Активно' | 'Неактивно';
 };
+
+
+export interface CartItem {
+  id: string
+  quantity: number
+  userId: string
+  productId: string
+  createdAt: Date
+  updatedAt: Date
+  product: Product
+}
+
+export interface Cart {
+  items: CartItem[]
+  totalItems: number
+  totalPrice: number
+}

@@ -10,7 +10,7 @@ function ProductCard({ product }: Props) {
   const isOutOfStock = product.stock!=null && product.stock<=0;
   return (
     <Link
-      href={``}
+      href={`product/${product.id}`}
       className={`
         border border-gray-300 p-4 w-[220px] rounded-[40px] hover:shadow-gray-300  transition-all duration-200 ease-in-out cursor-pointer
          bg-transparent
