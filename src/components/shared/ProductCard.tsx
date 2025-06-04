@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Product } from "../../../typings";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 type Props = {
   product: Product;
@@ -44,6 +45,9 @@ function ProductCard({ product }: Props) {
           {product.price} ₽
         </p>
       </div>
+      <Button>
+        Добавить
+      </Button>
     </Link>
   );
 }
