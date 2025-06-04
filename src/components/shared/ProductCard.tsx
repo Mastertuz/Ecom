@@ -45,7 +45,7 @@ function ProductCard({ product }: Props) {
           {product.price} ₽
         </p>
       </div>
-      <Button>
+      <Button className="cursor-pointer">
         Добавить
       </Button>
     </Link>
