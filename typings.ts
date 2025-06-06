@@ -35,3 +35,6 @@ export interface Cart {
   totalItems: number
   totalPrice: number
 }
+
+
+

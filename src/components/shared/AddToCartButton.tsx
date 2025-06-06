@@ -1,60 +1,71 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Product } from "../../../typings";
+import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import { Product, CartItem } from "../../../typings"
+import { addToCart, updateCartItemQuantity } from "@/actions/cart.actions"
+import { useTransition } from "react"
 
-
-interface AddToBasketButtonProps {
-  product: Product;
-  disabled?: boolean;
+type Props = {
+  product: Product
+  cartItem?: CartItem
 }
 
-function AddToCartButton({ product, disabled }: AddToBasketButtonProps) {
-  const isAddDisabled = false
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+export default function AddToCartButton({ product, cartItem }: Props) {
+  const [isPending, startTransition] = useTransition()
 
-  if (!isClient) {
-    return null;
+  const handleAdd = () => {
+    startTransition(async () => {
+      try {
+        const res = await addToCart(product.id)
+        if (res.success) {
+          toast.success(res.message)
+        } else {
+          toast.error(res.message)
+        }
+      } catch (error: any) {
+        toast.error(error.message || "Ошибка при добавлении товара")
+      }
+    })
   }
-  const removeItem = ()=>(console.log('goida'))
-  const addItem= ()=>(console.log('goida'))
-  const itemCount =0
-  return (
-    <div className="flex items-center space-x-2 max-[380px]:space-x-1">
-      <button
-        onClick={() => removeItem()}
-        className={`w-8 h-8 max-[380px]:size-6  rounded-full flex items-center justify-center transition-colors duration-200 ${
-          itemCount < 1
-            ? "bg-gray-100 cursor-not-allowed"
-            : "bg-gray-200 cursor-pointer hover:bg-gray-300"
-        }`}
-        disabled={itemCount === 0 || disabled}
-      >
-        <span
-          className={`text-xl font-bold ${
-            itemCount === 0 ? "text-gray-400" : "text-gray-600"
-          }`}
-        >
-          -
-        </span>
-      </button>
-      <span className="w-8 text-center text-white font-semibold">{itemCount}</span>
-      <button
-        onClick={() => addItem()}
-        className={`w-8 h-8 max-[380px]:size-6 rounded-full flex items-center justify-center transition-colors duration-200 ${
-          isAddDisabled
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-500 hover:bg-blue-600 cursor-pointer"
-        }`}
-        disabled={isAddDisabled}
-      >
-        <span className="text-xl font-bold text-white">+</span>
-      </button>
-    </div>
-  );
-}
 
-export default AddToCartButton;
+  const handleRemove = () => {
+    if (!cartItem) return
+    startTransition(async () => {
+      try {
+        const res = await updateCartItemQuantity(cartItem.id, cartItem.quantity - 1)
+        if (res.success) {
+          toast.success(res.message)
+        } else {
+          toast.error(res.message)
+        }
+      } catch (error: any) {
+        toast.error(error.message || "Ошибка при удалении товара")
+      }
+    })
+  }
+
+  const quantity = cartItem?.quantity || 0
+  const isAtMaxStock = quantity >= product.stock
+  const isOutOfStock = product.stock <= 0
+
+  return (
+    <div className="flex items-center space-x-2">
+      <Button
+        variant="outline"
+        onClick={handleRemove}
+        disabled={quantity === 0 || isPending}
+      >
+        -
+      </Button>
+      <span className="text-white font-semibold w-6 text-center">{quantity}</span>
+      <Button
+        variant="outline"
+        onClick={handleAdd}
+        disabled={isAtMaxStock || isOutOfStock || isPending}
+      >
+        +
+      </Button>
+    </div>
+  )
+}
