@@ -15,7 +15,8 @@ const nextConfig: NextConfig = {
       new URL('https://heppo.com/cdn/shop/files/60076-61_d0aec0c5-ca77-4f26-a231-794e3141376f.png?v=1717938117&width=1080'),
       new URL('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5ee-t5J-w6YE0PrGmMOOEJFfbxPHQ49pjJQ&s'),
       new URL('https://usmall.ru/image/663/36/84/e90e3d08125be0d8869f6e3ea99ac93b.png'),
-      new URL('https://ir.ebaystatic.com/pictures/aw/pics/sneakers/s_l1600_1e0878d98b.png')
+      new URL('https://ir.ebaystatic.com/pictures/aw/pics/sneakers/s_l1600_1e0878d98b.png'),
+      new URL('https://upa5pze5li.ufs.sh/**')
     ]
   }
 

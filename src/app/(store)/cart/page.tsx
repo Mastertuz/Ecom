@@ -1,7 +1,7 @@
-import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 import { getCartItems } from "@/actions/cart.actions";
 import CartClient from "@/components/shared/CardClient";
+import { auth } from "../../../../auth";
 
 async function CartPage() {
   const session = await auth();

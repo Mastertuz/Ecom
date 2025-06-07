@@ -1,9 +1,8 @@
 import { getAllProducts } from '@/actions/products.action';
 import AdminPageContent from '@/components/shared/AdminPageContent';
-import { auth } from '../../../auth';
-import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { auth } from '../../../../auth';
 
 declare module 'next-auth' {
   interface User {
@@ -17,7 +16,6 @@ export default async function AdminPage({
   searchParams: { status?: string };
 }) {
   const session = await auth()
-  console.log(session?.user)
   if (session?.user?.role !== 'admin') return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-2xl font-bold text-center mb-6">Доступ запрещен</h1>

@@ -1,3 +1,4 @@
+// src/app/components/shared/AddProductForm.tsx
 "use client";
 
 import {
@@ -20,25 +21,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { z } from "zod";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+
+import { UploadDropzone } from "@uploadthing/react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { createProduct } from "@/actions/products.action";
-import { ProductCreateInput } from "../../../typings";
 import { PlusCircle } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import type { OurFileRouter } from "@/app/api/uploadthing/core";
 
 const productSchema = z.object({
   name: z.string().min(1, "Название обязательно"),
   description: z.string().optional(),
   price: z.coerce.number().min(0, "Цена должна быть положительной"),
-  imageUrl: z.string().url("Введите корректный URL изображения"),
   stock: z.coerce.number().min(1, "Количество товара не может быть меньше 1"),
   status: z.enum(["Активно", "Неактивно"]),
 });
@@ -51,17 +48,24 @@ export default function AddProductDialog() {
     defaultValues: {
       name: "",
       description: "",
-      imageUrl: "",
       price: 0,
       stock: 1,
-      status:'Активно'
+      status: "Активно",
     },
   });
 
-  const onSubmit = async (data: ProductCreateInput) => {
+  const [imageUrl, setImageUrl] = useState("");
+
+  const onSubmit = async (data: ProductFormData) => {
+    if (!imageUrl) {
+      alert("Пожалуйста, загрузите изображение.");
+      return;
+    }
+
     try {
-      const product = await createProduct(data);
+      await createProduct({ ...data, imageUrl });
       form.reset();
+      setImageUrl("");
     } catch (err) {
       console.error("Ошибка при создании:", err);
     }
@@ -71,16 +75,15 @@ export default function AddProductDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button className="cursor-pointer" variant="outline">
-          <span> Добавить товар</span>
-          <PlusCircle className="h-4 w-4" />
+          <span>Добавить товар</span>
+          <PlusCircle className="h-4 w-4 ml-2" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Добавление товара</DialogTitle>
           <DialogDescription>
-            Заполните информацию о товаре. Нажмите "Добавить", когда будете
-            готовы.
+            Заполните информацию о товаре. Загрузите изображение и нажмите "Добавить".
           </DialogDescription>
         </DialogHeader>
 
@@ -106,10 +109,7 @@ export default function AddProductDialog() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Статус</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Выберите статус" />
@@ -132,10 +132,7 @@ export default function AddProductDialog() {
                 <FormItem>
                   <FormLabel>Описание</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Описание товара (необязательно)"
-                      {...field}
-                    />
+                    <Textarea placeholder="Описание товара" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -149,12 +146,7 @@ export default function AddProductDialog() {
                 <FormItem>
                   <FormLabel>Цена</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      className="appearance-none"
-                      placeholder="Введите цену"
-                      {...field}
-                    />
+                    <Input type="number" placeholder="Введите цену" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -168,40 +160,35 @@ export default function AddProductDialog() {
                 <FormItem>
                   <FormLabel>Количество</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      className="appearance-none"
-                      placeholder="Введите количество"
-                      {...field}
-                    />
+                    <Input type="number" placeholder="Введите количество" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ссылка на изображение</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://example.com/image.jpg"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <div>
+              <FormLabel>Изображение товара</FormLabel>
+              {imageUrl ? (
+                <img src={imageUrl} alt="Uploaded" className="h-40 rounded-md mt-2" />
+              ) : (
+                <UploadDropzone<OurFileRouter, "postImage">
+                  endpoint="postImage"
+                  onClientUploadComplete={(res) => {
+                    if (res && res[0]?.ufsUrl) {
+                      setImageUrl(res[0].ufsUrl);
+                    }
+                  }}
+                  onUploadError={(error: Error) => {
+                    alert(`Ошибка загрузки: ${error.message}`);
+                  }}
+                />
               )}
-            />
+            </div>
 
             <DialogFooter>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting
-                  ? "Добавление..."
-                  : "Добавить товар"}
+                {form.formState.isSubmitting ? "Добавление..." : "Добавить товар"}
               </Button>
             </DialogFooter>
           </form>
