@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import AddToCartButton from "@/components/shared/AddToCartButton";
+import Link from "next/link";
 
 interface CartClientProps {
   cartItems: CartItem[];
@@ -21,7 +22,7 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
           <CardContent className="p-8 text-center">
             <p className="text-muted-foreground">Ваша корзина пуста</p>
             <Button asChild className="mt-4">
-              <a href="/">Продолжить покупки</a>
+              <Link href="/">Продолжить покупки</Link>
             </Button>
           </CardContent>
         </Card>

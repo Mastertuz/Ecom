@@ -11,7 +11,7 @@ async function Header() {
     <header className="w-full bg-[#0a0a0a] sticky py-4 top-0 mb-6 z-50 ">
       <nav className="flex justify-between items-center">
         <Link href={"/"}>
-          <h1 className="text-2xl font-bold">Интернет-Магазин</h1>
+          <h1 className="text-2xl font-bold">E-com</h1>
         </Link>
        <SearchInput/>
         <div className="flex gap-2">
@@ -20,7 +20,6 @@ async function Header() {
               href={"/cart"}
             >
               <span>Корзина</span>
-              <ShoppingBasketIcon size={24} />
             </Link>
           </Button>
 

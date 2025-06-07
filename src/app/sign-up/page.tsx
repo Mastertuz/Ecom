@@ -13,10 +13,6 @@ const Page = async () => {
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-sm space-y-6">
         <h1 className="text-2xl font-bold text-center mb-6">Создать аккаунт</h1>
-
-       
-
-        {/* Email/Password Sign Up */}
         <form
           className="space-y-4"
           action={async (formData) => {

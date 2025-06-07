@@ -13,7 +13,6 @@ const Page = async () => {
       <div className="w-full max-w-sm space-y-6">
         <h1 className="text-2xl font-bold text-center mb-6">Авторизация</h1>
 
-        {/* Email/Password Sign In */}
         <form
           className="space-y-4"
           action={async (formData) => {

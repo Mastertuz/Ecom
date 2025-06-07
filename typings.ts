@@ -36,5 +36,12 @@ export interface Cart {
   totalPrice: number
 }
 
+export interface CartActionResult {
+  success: boolean
+  message: string
+  cartItemId?: string
+  quantity?: number
+}
+
 
 

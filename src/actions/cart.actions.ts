@@ -3,8 +3,16 @@
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { auth } from "../../auth"
+import type { Cart } from "../../typings" 
 
-export async function addToCart(productId: string) {
+interface CartActionResult {
+  success: boolean
+  message: string
+  cartItemId?: string
+  quantity?: number
+}
+
+export async function addToCart(productId: string): Promise<CartActionResult> {
   try {
     const session = await auth()
     if (!session?.user?.id) throw new Error("Необходимо авторизоваться")
@@ -18,17 +26,18 @@ export async function addToCart(productId: string) {
       where: { userId_productId: { userId, productId } },
     })
 
+    let cartItem
     if (existingCartItem) {
       if (existingCartItem.quantity >= product.stock) {
         throw new Error("Больше товара нет на складе")
       }
 
-      await prisma.cartItem.update({
+      cartItem = await prisma.cartItem.update({
         where: { id: existingCartItem.id },
         data: { quantity: existingCartItem.quantity + 1 },
       })
     } else {
-      await prisma.cartItem.create({
+      cartItem = await prisma.cartItem.create({
         data: {
           userId,
           productId,
@@ -38,7 +47,12 @@ export async function addToCart(productId: string) {
     }
 
     revalidatePath("/cart")
-    return { success: true, message: "Товар добавлен в корзину" }
+    return {
+      success: true,
+      message: "Товар добавлен в корзину",
+      cartItemId: cartItem.id,
+      quantity: cartItem.quantity,
+    }
   } catch (error) {
     console.error("Error adding to cart:", error)
     return {
@@ -48,7 +62,7 @@ export async function addToCart(productId: string) {
   }
 }
 
-export async function updateCartItemQuantity(cartItemId: string, quantity: number) {
+export async function updateCartItemQuantity(cartItemId: string, quantity: number): Promise<CartActionResult> {
   try {
     const session = await auth()
     if (!session?.user?.id) throw new Error("Необходимо авторизоваться")
@@ -71,13 +85,18 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
       throw new Error(`Максимум ${cartItem.product.stock} шт. в наличии`)
     }
 
-    await prisma.cartItem.update({
+    const updatedCartItem = await prisma.cartItem.update({
       where: { id: cartItemId },
       data: { quantity },
     })
 
     revalidatePath("/cart")
-    return { success: true, message: "Количество обновлено" }
+    return {
+      success: true,
+      message: "Количество обновлено",
+      cartItemId: updatedCartItem.id,
+      quantity: updatedCartItem.quantity,
+    }
   } catch (error) {
     console.error("Error updating cart item:", error)
     return {
@@ -87,7 +106,7 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
   }
 }
 
-export async function getCartItems() {
+export async function getCartItems(): Promise<Cart> {
   try {
     const session = await auth()
     if (!session?.user?.id) return { items: [], totalItems: 0, totalPrice: 0 }
@@ -108,7 +127,7 @@ export async function getCartItems() {
   }
 }
 
-export async function removeFromCart(cartItemId: string) {
+export async function removeFromCart(cartItemId: string): Promise<CartActionResult> {
   try {
     const session = await auth()
     if (!session?.user?.id) throw new Error("Необходимо авторизоваться")

@@ -34,7 +34,7 @@ function SearchInput() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className=" w-full max-w-7xl">
+      <form onSubmit={form.handleSubmit(onSubmit)} className=" w-full max-w-4xl mx-4">
         <FormField
           control={form.control}
           name="input"
