@@ -1,19 +1,67 @@
-"use client";
+"use client"
 
-import { CartItem } from "../../../typings";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
-import AddToCartButton from "@/components/shared/AddToCartButton";
-import Link from "next/link";
+import type { CartItem } from "../../../typings"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import Image from "next/image"
+import AddToCartButton from "@/components/shared/AddToCartButton"
+import Link from "next/link"
+import { useState } from "react"
+import { Loader2 } from "lucide-react"
 
 interface CartClientProps {
-  cartItems: CartItem[];
-  totalItems: number;
-  totalPrice: number;
+  cartItems: CartItem[]
+  totalItems: number
+  totalPrice: number
 }
 
 function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
+  const [isProcessing, setIsProcessing] = useState(false)
+
+  const handlePayment = async () => {
+    setIsProcessing(true)
+
+    try {
+      const response = await fetch("/api/payment/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.confirmationUrl) {
+        // Сохраняем информацию о платеже в localStorage для отслеживания
+        localStorage.setItem(
+          "pendingPayment",
+          JSON.stringify({
+            paymentId: data.paymentId,
+            orderId: data.orderId,
+            timestamp: Date.now(),
+          }),
+        )
+
+        // Перенаправляем на страницу оплаты ЮKassa
+        window.location.href = data.confirmationUrl
+      } else {
+        throw new Error(data.error || "Ошибка создания платежа")
+      }
+    } catch (error) {
+      console.error("Payment error:", error)
+
+      let errorMessage = "Произошла ошибка при создании платежа. Попробуйте еще раз."
+
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+
+      alert(errorMessage)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto p-4 max-w-[1536px]">
@@ -27,7 +75,7 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
@@ -55,19 +103,14 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
                       <h2 className="text-sm xs:text-lg text-white sm:text-xl font-semibold truncate">
                         {cartItem.product.name}
                       </h2>
-                      <p className="text-sm sm:text-base text-white">
-                        Цена: {cartItem.product.price}₽
-                      </p>
+                      <p className="text-sm sm:text-base text-white">Цена: {cartItem.product.price}₽</p>
                       <p className="text-sm sm:text-base text-white">
                         Итого: {cartItem.product.price * cartItem.quantity}₽
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center ml-4 flex-shrink-0">
-                    <AddToCartButton
-                      product={cartItem.product}
-                      cartItem={cartItem}
-                    />
+                    <AddToCartButton product={cartItem.product} cartItem={cartItem} />
                   </div>
                 </div>
               </CardContent>
@@ -89,12 +132,21 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
               </p>
             </div>
 
-            <Button className="mt-4 w-full">Оплатить</Button>
+            <Button className="mt-4 w-full" onClick={handlePayment} disabled={isProcessing}>
+              {isProcessing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Обработка...
+                </>
+              ) : (
+                "Оплатить"
+              )}
+            </Button>
           </CardContent>
         </Card>
       </div>
     </div>
-  );
+  )
 }
 
-export default CartClient;
+export default CartClient

@@ -1,5 +1,5 @@
 import ProductCard from "@/components/shared/ProductCard";
-import { auth } from "../../auth";
+import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 import { getAllProducts } from "@/actions/products.action";
 import SaleBanner from "@/components/shared/SaleBanner";

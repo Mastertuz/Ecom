@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCartItems } from "@/actions/cart.actions";
-import CartClient from "@/components/shared/CardClient";
+import CartClient from "@/components/shared/CartClient";
 import { auth } from "../../../../auth";
 
 async function CartPage() {

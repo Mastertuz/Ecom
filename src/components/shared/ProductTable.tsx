@@ -1,6 +1,17 @@
 'use client';
 
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
   Table,
   TableBody,
   TableCell,
@@ -22,9 +33,6 @@ export default function ProductTable({ products }: Props) {
   const router = useRouter();
 
   const handleDelete = async (id: string) => {
-    const confirmed = confirm('Вы уверены, что хотите удалить этот товар?');
-    if (!confirmed) return;
-
     try {
       const res = await fetch('/api/products', {
         method: 'DELETE',
@@ -41,8 +49,7 @@ export default function ProductTable({ products }: Props) {
         try {
           const data = await res.json();
           errorMessage = data?.error || errorMessage;
-        } catch {
-        }
+        } catch {}
         alert(`Ошибка: ${errorMessage}`);
       }
     } catch (err) {
@@ -50,6 +57,7 @@ export default function ProductTable({ products }: Props) {
       alert('Произошла ошибка при удалении товара.');
     }
   };
+
   return (
     <Table>
       <TableHeader>
@@ -88,21 +96,36 @@ export default function ProductTable({ products }: Props) {
                 {product.status}
               </span>
             </TableCell>
-            <TableCell className="font-semibold">
-              {product.price} ₽
-            </TableCell>
+            <TableCell className="font-semibold">{product.price} ₽</TableCell>
             <TableCell>
               {new Date(product.updatedAt).toLocaleDateString()}
             </TableCell>
             <TableCell className="space-x-2">
-             <EditProductDialog product={product} />
-              <Button
-                variant="link"
-                className="text-red-600"
-                onClick={() => handleDelete(product.id)}
-              >
-                Удалить
-              </Button>
+              <EditProductDialog product={product} />
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="link" className="text-red-600">
+                    Удалить
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Удалить товар «{product.name}»?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Это действие нельзя отменить. Товар будет удалён
+                      безвозвратно.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Отмена</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => handleDelete(product.id)}>
+                      Удалить
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </TableCell>
             <TableCell>{product.stock}</TableCell>
             <TableCell>{product.id}</TableCell>

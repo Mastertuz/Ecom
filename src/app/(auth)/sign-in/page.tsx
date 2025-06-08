@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { auth } from "../../../auth";
-import { signUp } from "@/actions/user.action";
+import { redirect } from "next/navigation";
+import { auth, signIn } from "../../../../auth";
 
 const Page = async () => {
   const session = await auth();
@@ -12,13 +11,13 @@ const Page = async () => {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-sm space-y-6">
-        <h1 className="text-2xl font-bold text-center mb-6">Создать аккаунт</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Авторизация</h1>
+
         <form
           className="space-y-4"
           action={async (formData) => {
             "use server";
-            const res = await signUp(formData);
-            redirect("/sign-in");
+            await signIn("credentials", formData);
           }}
         >
           <Input
@@ -33,16 +32,16 @@ const Page = async () => {
             placeholder="Пароль"
             type="password"
             required
-            autoComplete="new-password"
+            autoComplete="current-password"
           />
           <Button className="w-full cursor-pointer" type="submit">
-            Зарегистрироваться
+            Войти
           </Button>
         </form>
 
         <div className="text-center">
-          <Button asChild variant="link" className="cursor-pointer">
-            <Link href="/sign-in">Уже есть аккаунт? Авторизоваться</Link>
+          <Button asChild variant="link" >
+            <Link href="/sign-up" className="cursor-pointer">Нет аккаунта? Зарегистрироваться</Link>
           </Button>
         </div>
       </div>

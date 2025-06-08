@@ -1,4 +1,3 @@
-// src/app/components/shared/AddProductForm.tsx
 "use client";
 
 import {
@@ -21,10 +20,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { UploadDropzone } from "@uploadthing/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -55,6 +54,7 @@ export default function AddProductDialog() {
   });
 
   const [imageUrl, setImageUrl] = useState("");
+  const closeButtonRef = useRef<HTMLButtonElement>(null); // ref для закрытия
 
   const onSubmit = async (data: ProductFormData) => {
     if (!imageUrl) {
@@ -66,6 +66,9 @@ export default function AddProductDialog() {
       await createProduct({ ...data, imageUrl });
       form.reset();
       setImageUrl("");
+
+      // Программное закрытие модального окна
+      closeButtonRef.current?.click();
     } catch (err) {
       console.error("Ошибка при создании:", err);
     }
@@ -74,16 +77,17 @@ export default function AddProductDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="cursor-pointer" variant="outline">
-          <span>Добавить товар</span>
+        <Button variant="outline">
+          Добавить товар
           <PlusCircle className="h-4 w-4 ml-2" />
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Добавление товара</DialogTitle>
           <DialogDescription>
-            Заполните информацию о товаре. Загрузите изображение и нажмите "Добавить".
+            Заполните информацию о товаре и загрузите изображение.
           </DialogDescription>
         </DialogHeader>
 
@@ -190,6 +194,10 @@ export default function AddProductDialog() {
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? "Добавление..." : "Добавить товар"}
               </Button>
+              {/* Скрытая кнопка для закрытия */}
+              <DialogTrigger asChild>
+                <button type="button" ref={closeButtonRef} className="hidden" />
+              </DialogTrigger>
             </DialogFooter>
           </form>
         </Form>

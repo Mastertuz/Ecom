@@ -19,7 +19,8 @@ model User {
   role          String      @default("user")
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  cartItems     CartItem[]  
+  cartItems     CartItem[]
+  orders        Order[]     // <--- добавляем связь с заказами
 }
 
 model Account {
@@ -68,7 +69,8 @@ model Product {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   stock       Int         @default(1)
-  cartItems   CartItem[]  
+  cartItems   CartItem[]
+  orderItems  OrderItem[] // <--- добавляем связь с заказами
 }
 
 model CartItem {
@@ -82,5 +84,29 @@ model CartItem {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, productId])  
+  @@unique([userId, productId])
+}
+
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String
+  total      Float
+  status     String      @default("pending")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  orderItems OrderItem[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
 }
