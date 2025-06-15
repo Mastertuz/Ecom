@@ -68,6 +68,7 @@ export default function ProductTable({ products }: Props) {
           <TableHead>Цена</TableHead>
           <TableHead>Обновлено</TableHead>
           <TableHead>Действия</TableHead>
+          <TableHead>Категория</TableHead>
           <TableHead>Количество</TableHead>
           <TableHead>ID</TableHead>
         </TableRow>
@@ -127,6 +128,7 @@ export default function ProductTable({ products }: Props) {
                 </AlertDialogContent>
               </AlertDialog>
             </TableCell>
+            <TableCell>{product.category}</TableCell>
             <TableCell>{product.stock}</TableCell>
             <TableCell>{product.id}</TableCell>
           </TableRow>

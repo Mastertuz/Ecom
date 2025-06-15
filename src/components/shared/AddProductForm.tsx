@@ -25,13 +25,14 @@ import { PlusCircle } from "lucide-react"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 import { Category } from "@prisma/client"
 
+// Только реальные категории для товаров
 const categories = Object.values(Category)
 
 const productSchema = z.object({
   name: z.string().min(1, "Название обязательно"),
   description: z.string().optional(),
   price: z.coerce.number().min(0, "Цена должна быть положительной"),
-  stock: z.coerce.number().min(1, "Количество товара не может быть меньше 1"),
+  stock: z.coerce.number().min(1, "Количество тов��ра не может быть меньше 1"),
   category: z.nativeEnum(Category),
   status: z.enum(["Активно", "Неактивно"]),
 })
@@ -46,7 +47,7 @@ export default function AddProductDialog() {
       description: "",
       price: 0,
       stock: 1,
-      category: Category.ВСЕ,
+      category: Category.Кроссовки, // Используем первую реальную категорию
       status: "Активно",
     },
   })

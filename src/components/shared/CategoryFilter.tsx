@@ -4,7 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Category } from "@prisma/client"
 
-const categories = ["Все", ...Object.values(Category).filter((cat) => cat !== "Все")]
+// Создаем массив для UI, где "Все" - это строка, а не enum значение
+const categories = ["Все", ...Object.values(Category)]
 
 export default function CategoryFilter() {
   const router = useRouter()

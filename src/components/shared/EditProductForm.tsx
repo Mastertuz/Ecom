@@ -27,6 +27,7 @@ import type { OurFileRouter } from "@/app/api/uploadthing/core"
 import { updateProduct } from "@/actions/products.action"
 import { Category } from "@prisma/client"
 
+// Только реальные категории для товаров
 const categories = Object.values(Category)
 
 const productSchema = z.object({

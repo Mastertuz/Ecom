@@ -60,7 +60,6 @@ enum Status {
 }
 
 enum Category {
-  Все
   Кроссовки
   Поло
   Толстовки
@@ -75,7 +74,7 @@ model Product {
   price       Float
   imageUrl    String
   status      Status      @default(Активно)
-  category    Category    @default(Все)
+  category    Category    @default(Кроссовки)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   stock       Int         @default(1)
