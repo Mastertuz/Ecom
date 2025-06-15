@@ -1,24 +1,19 @@
-export interface Product {
-  id: string;
-  name: string;
-  description?: string | null;
-  imageUrl?: string;
-  price: number;
-  createdAt: Date;
-  updatedAt: Date;
-  status: 'Активно' | 'Неактивно';
-  stock: number
-}
+import type { Product as PrismaProduct, Category as PrismaCategory, Status } from "@prisma/client"
+
+export type Category = PrismaCategory
+export type ProductStatus = Status
+
+export interface Product extends PrismaProduct {}
 
 export type ProductCreateInput = {
-  name: string;
-  description?: string;
-  price: number;
-  stock: number;
-  imageUrl: string;
-  status?: 'Активно' | 'Неактивно';
-};
-
+  name: string
+  description?: string
+  price: number
+  stock: number
+  imageUrl: string
+  category?: Category
+  status?: ProductStatus
+}
 
 export interface CartItem {
   id: string
@@ -42,6 +37,3 @@ export interface CartActionResult {
   cartItemId?: string
   quantity?: number
 }
-
-
-

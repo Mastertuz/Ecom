@@ -22,8 +22,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Product } from '../../../typings';
 import { useRouter } from 'next/navigation';
-import EditProductDialog from './EditProductForm';
 import Image from 'next/image';
+import { EditProductDialog } from './EditProductForm';
 
 type Props = {
   products: Product[];

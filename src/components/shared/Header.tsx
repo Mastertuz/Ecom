@@ -1,4 +1,4 @@
-import { HeartIcon, ShoppingBasketIcon } from "lucide-react";
+import { HeartIcon, ShoppingBasket, ShoppingBasketIcon } from "lucide-react";
 import Link from "next/link";
 import { auth, signIn, signOut } from "../../../auth";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import SearchInput from "./SearchInput";
 
 async function Header() {
   const session = await auth();
+  const isAdmin = session?.user?.role ==='admin'
   return (
     <header className="w-full bg-[#0a0a0a] sticky py-4 top-0 mb-6 z-50 ">
       <nav className="flex justify-between items-center">
@@ -14,7 +15,7 @@ async function Header() {
           <h1 className="text-2xl font-bold">E-com</h1>
         </Link>
        <SearchInput/>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <Button asChild>
             <Link
               href={"/cart"}
@@ -24,6 +25,7 @@ async function Header() {
           </Button>
 
           {session?.user ? (
+            <div className="flex items-center space-x-2 ">
             <Button
               onClick={async () => {
                 "use server";
@@ -33,6 +35,19 @@ async function Header() {
             >
               Выйти
             </Button>
+            <Button className="cursor-pointer" asChild>
+              <Link href={"/orders"}>
+              Заказы
+              </Link>
+            </Button>
+            {isAdmin && (
+            <Button className="cursor-pointer" asChild>
+              <Link href={'/admin'}>
+              Админ-панель
+              </Link>
+            </Button>
+            )}
+            </div>
           ) : (
             <Button
               onClick={async () => {
@@ -44,6 +59,7 @@ async function Header() {
               Войти
             </Button>
           )}
+
 
           <UserAvatar />
         </div>
