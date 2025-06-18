@@ -27,6 +27,7 @@ export default function AddToCartButton({ product, cartItem, size = "default", s
           toast.error(res.message)
         }
       } catch (error) {
+        console.error("Error adding to cart:", error)
         toast.error( "Ошибка при добавлении товара")
       }
     })
@@ -43,6 +44,7 @@ export default function AddToCartButton({ product, cartItem, size = "default", s
           toast.error(res.message)
         }
       } catch (error) {
+        console.error("Error removing from cart:", error)
         toast.error( "Ошибка при удалении товара")
       }
     })
