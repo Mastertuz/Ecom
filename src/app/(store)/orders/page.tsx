@@ -10,7 +10,6 @@ async function OrdersPage() {
   if (!session?.user?.id) {
     redirect("/sign-in")
   }
-
   const orders = await prisma.order.findMany({
     where: { userId: session.user.id },
     include: {
@@ -51,14 +50,17 @@ async function OrdersPage() {
           {orders.map((order) => (
             <Card key={order.id}>
               <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg">Заказ #{order.id}</CardTitle>
+                <div className="flex justify-between items-start max-sm:flex-col">
+                  <div className="flex flex-wrap flex-col">
+                    <CardTitle className="text-lg max-sm:text-base pr-4 ">Заказ #{order.id}</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       {new Date(order.createdAt).toLocaleDateString("ru-RU")}
                     </p>
                   </div>
-                  {getStatusBadge(order.status)}
+                  <div className="max-sm mt-2">
+                  {getStatusBadge(order.status)
+                  }
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
