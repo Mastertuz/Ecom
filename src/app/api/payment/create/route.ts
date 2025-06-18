@@ -29,7 +29,7 @@ export async function POST() {
     }
 
     const baseUrl = process.env.NODE_ENV === 'production'
-            ? 'https://ecom-y3vl.vercel.app/' 
+            ? 'https://e-shop-rho-gold.vercel.app' // Replace with your primary production domain
             : `${process.env.NEXT_PUBLIC_BASE_URL}`;
 
 
@@ -57,7 +57,7 @@ export async function POST() {
       },
       confirmation: {
         type: "redirect" as const,
-        return_url: `${baseUrl}/success?orderId=${order.id}`,
+        return_url: `${baseUrl}/payment/success?orderId=${order.id}`,
       },
       capture: true,
       description: `Заказ #${order.id}`,
