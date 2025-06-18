@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import Header from "@/components/shared/Header";
 
 
 
 export const metadata: Metadata = {
-  title: "Интернет-магазин с использованием исскуственного интеллекта",
-  description: "Создано Сергеем Бровановым",
+  title: "Интернет-магазин с интеграцией исскуственного интеллекта",
+  description: "Создано Василием Димитровым",
 };
 
 export default function RootLayout({

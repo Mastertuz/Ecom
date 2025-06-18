@@ -13,11 +13,11 @@ async function CartPage() {
   const { items: cartItems, totalItems, totalPrice } = await getCartItems();
 
   return (
-    <CartClient
-      cartItems={cartItems}
-      totalItems={totalItems}
-      totalPrice={totalPrice}
-    />
+      <CartClient
+        cartItems={cartItems}
+        totalItems={totalItems}
+        totalPrice={totalPrice}
+      />
   );
 }
 

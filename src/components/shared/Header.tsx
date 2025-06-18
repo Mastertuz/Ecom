@@ -1,71 +1,70 @@
-import { HeartIcon, ShoppingBasket, ShoppingBasketIcon } from "lucide-react";
-import Link from "next/link";
-import { auth, signIn, signOut } from "../../../auth";
-import { Button } from "@/components/ui/button";
-import UserAvatar from "./UserAvatar";
-import SearchInput from "./SearchInput";
+import { ShoppingBasket } from "lucide-react"
+import Link from "next/link"
+import { auth, signOut } from "../../../auth"
+import { Button } from "@/components/ui/button"
+import UserAvatar from "./UserAvatar"
+import SearchInput from "./SearchInput"
+import MobileMenu from "./MobileMenu"
 
 async function Header() {
-  const session = await auth();
-  const isAdmin = session?.user?.role ==='admin'
+  const session = await auth()
+  const isAdmin = session?.user?.role === "admin"
+
+  const handleSignOut = async () => {
+    "use server"
+    await signOut()
+  }
+
   return (
-    <header className="w-full bg-[#0a0a0a] sticky py-4 top-0 mb-6 z-50 ">
-      <nav className="flex justify-between items-center">
+    <header className="w-full bg-[#0a0a0a] sticky py-4 top-0 mb-6 z-50">
+      <nav className="flex justify-between items-center px-4">
         <Link href={"/"}>
           <h1 className="text-2xl font-bold">E-com</h1>
         </Link>
-       <SearchInput/>
-        <div className="flex items-center gap-2">
+
+          <SearchInput />
+
+        {/* Desktop Navigation - показывается только на экранах 2xl и больше */}
+        <div className="hidden 2xl:flex items-center gap-2">
           <Button asChild>
-            <Link
-              href={"/cart"}
-            >
+            <Link href={"/cart"}>
               <span>Корзина</span>
             </Link>
           </Button>
 
           {session?.user ? (
-            <div className="flex items-center space-x-2 ">
-            <Button
-              onClick={async () => {
-                "use server";
-                await signOut();
-              }}
-              className="cursor-pointer"
-            >
-              Выйти
-            </Button>
-            <Button className="cursor-pointer" asChild>
-              <Link href={"/orders"}>
-              Заказы
-              </Link>
-            </Button>
-            {isAdmin && (
-            <Button className="cursor-pointer" asChild>
-              <Link href={'/admin'}>
-              Админ-панель
-              </Link>
-            </Button>
-            )}
+            <div className="flex items-center space-x-2">
+              <form action={handleSignOut}>
+                <Button type="submit" className="cursor-pointer">
+                  Выйти
+                </Button>
+              </form>
+              <Button className="cursor-pointer" asChild>
+                <Link href={"/orders"}>Заказы</Link>
+              </Button>
+              {isAdmin && (
+                <Button className="cursor-pointer" asChild>
+                  <Link href={"/admin"}>Админ-панель</Link>
+                </Button>
+              )}
             </div>
           ) : (
-            <Button
-              onClick={async () => {
-                "use server";
-                await signIn("credentials");
-              }}
-              className="cursor-pointer"
-            >
-              Войти
+            <Button asChild className="cursor-pointer">
+              <Link href={"/sign-in"}>Войти</Link>
             </Button>
           )}
 
-
           <UserAvatar />
+        </div>
+
+        {/* Mobile Navigation - показывается на экранах меньше 2xl */}
+        <div className="flex 2xl:hidden items-center gap-2">
+          <UserAvatar />
+          <MobileMenu session={session} isAdmin={isAdmin} onSignOut={handleSignOut} />
         </div>
       </nav>
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

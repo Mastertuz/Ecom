@@ -32,7 +32,6 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
       const data = await response.json()
 
       if (response.ok && data.confirmationUrl) {
-        // Сохраняем информацию о платеже в localStorage для отслеживания
         localStorage.setItem(
           "pendingPayment",
           JSON.stringify({
@@ -42,7 +41,6 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
           }),
         )
 
-        // Перенаправляем на страницу оплаты ЮKassa
         window.location.href = data.confirmationUrl
       } else {
         throw new Error(data.error || "Ошибка создания платежа")
@@ -79,7 +77,7 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-[1536px]">
+    <div className="container mx-auto p-4 ">
       <h1 className="text-2xl text-white font-bold mb-4">Ваша корзина</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-grow space-y-4">
