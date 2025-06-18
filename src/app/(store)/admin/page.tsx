@@ -30,6 +30,7 @@ export default async function AdminPage({
   const products = await getAllProducts();
   
   const status = searchParams?.status || '';
+  console.log('Admin Page Status:', status);
   
   return <AdminPageContent products={products} />;
 }

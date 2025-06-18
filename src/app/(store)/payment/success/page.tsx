@@ -11,7 +11,7 @@ const checkout = new YooCheckout({
   shopId: process.env.YUKASSA_SHOP_ID!,
   secretKey: process.env.YUKASSA_SECRET_KEY!,
 })
-
+console.log(":", checkout)
 interface PaymentSuccessProps {
   searchParams: Promise<{
     orderId?: string
@@ -24,7 +24,6 @@ async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
 
   if (orderId) {
     try {
-      // Сначала получаем заказ
       order = await prisma.order.findUnique({
         where: { id: orderId },
         include: {
@@ -36,32 +35,22 @@ async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
         },
       })
 
-      // Если заказ найден и статус pending, проверяем статус платежа в ЮKassa
       if (order && order.status === "pending") {
         console.log("Order status is pending, checking payment status...")
 
-        // Ищем платеж по metadata (orderId)
         try {
-          // Получаем информацию о платеже из localStorage (если есть)
-          // Или можно попробовать найти платеж через API ЮKassa
-
-          // Для упрощения, обновляем статус заказа на "paid" и очищаем корзину
-          // так как пользователь попал на страницу успеха
           const session = await auth()
 
           if (session?.user?.id) {
-            // Обновляем статус заказа
             await prisma.order.update({
               where: { id: orderId },
               data: { status: "paid" },
             })
 
-            // Очищаем корзину пользователя
             await prisma.cartItem.deleteMany({
               where: { userId: session.user.id },
             })
 
-            // Обновляем объект order для отображения
             order = { ...order, status: "paid" }
             paymentUpdated = true
 

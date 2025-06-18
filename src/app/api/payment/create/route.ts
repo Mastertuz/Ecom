@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { YooCheckout } from "@a2seven/yoo-checkout"
 import { auth } from "../../../../../auth"
 import { getCartItems } from "@/actions/cart.actions"
@@ -9,7 +9,7 @@ const checkout = new YooCheckout({
   secretKey: process.env.YOOKASSA_SECRET_KEY!,
 })
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const session = await auth()
 
@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Проверяем, что Prisma клиент инициализирован
     if (!prisma) {
       console.error("Prisma client is not initialized")
       return NextResponse.json({ error: "Database connection error" }, { status: 500 })
@@ -33,7 +32,6 @@ export async function POST(request: NextRequest) {
     console.log("Cart items:", cartItems.length)
     console.log("Total price:", totalPrice)
 
-    // Создаем заказ в базе данных
     const order = await prisma.order.create({
       data: {
         userId: session.user.id,
@@ -51,7 +49,6 @@ export async function POST(request: NextRequest) {
 
     console.log("Order created:", order.id)
 
-    // Создаем платеж в ЮKassa
     const paymentData = {
       amount: {
         value: totalPrice.toFixed(2),

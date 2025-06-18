@@ -8,6 +8,7 @@ import { Button } from "../ui/button"
 import { Minus, Plus } from "lucide-react"
 import { addToCart, updateCartItemQuantity } from "@/actions/cart.actions"
 import { toast } from "sonner"
+import Error from "next/error"
 
 type Props = {
   product: Product
@@ -41,9 +42,9 @@ function ProductCard({ product }: Props) {
         } else {
           toast.error(result.message)
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error adding to cart:", error)
-        toast.error(error.message || "Ошибка при добавлении товара в корзину")
+        toast.error( "Ошибка при добавлении товара в корзину")
       }
     })
   }
@@ -70,9 +71,9 @@ function ProductCard({ product }: Props) {
         } else {
           toast.error(result.message)
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error updating quantity:", error)
-        toast.error(error.message || "Ошибка при обновлении количества товара")
+        toast.error( "Ошибка при обновлении количества товара")
       }
     })
   }

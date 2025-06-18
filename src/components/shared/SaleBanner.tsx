@@ -17,7 +17,7 @@ function SaleBanner() {
         description: `"${sale.couponCode}" добавлен в буфер обмена`,
       })
     } catch (err) {
-      toast.error("Не удалось скопировать промокод")
+      toast.error("Не удалось скопировать промокод",err||'')
     }
   }
 

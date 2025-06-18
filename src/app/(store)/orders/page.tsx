@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { auth } from "../../../../auth"
-import { toast } from "sonner"
 import { OrderNumberCopy } from "@/components/shared/CopyToClipboard"
 
 async function OrdersPage() {
@@ -23,13 +22,7 @@ async function OrdersPage() {
     },
     orderBy: { createdAt: "desc" },
   })
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
-      toast.success('ID скопирован в буфер обмена');
-      }
-    );
-  }
+
 
   const getStatusBadge = (status: string) => {
     switch (status) {
