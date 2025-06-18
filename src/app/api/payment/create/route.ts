@@ -29,7 +29,7 @@ export async function POST() {
     }
 
     const baseUrl = process.env.NODE_ENV === 'production'
-            ? 'https://e-shop-rho-gold.vercel.app' // Replace with your primary production domain
+            ? 'https://ecom-y3vl.vercel.app' // Replace with your primary production domain
             : `${process.env.NEXT_PUBLIC_BASE_URL}`;
 
 

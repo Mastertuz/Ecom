@@ -156,8 +156,9 @@ async function ProductPage({
               </div>
             )}
           </div>
-
-          <AddToCartButton product={product} cartItem={cartItem} />
+          <div className="mt-4">
+          <AddToCartButton product={product}  cartItem={cartItem} />
+          </div>
         </div>
       </div>
     </div>
