@@ -97,7 +97,7 @@ async function ProfilePage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-sm">{order.total.toLocaleString()}₽</p>
+                      <p className="font-semibold text-sm">{order.total}₽</p>
                       <div className="mt-1">{getStatusBadge(order.status)}</div>
                     </div>
                   </div>

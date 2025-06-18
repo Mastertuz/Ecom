@@ -7,15 +7,23 @@ type Props = {
 };
 
 export function OrderNumberCopy({ orderId }: Props) {
-   const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
-      toast.success('ID скопирован в буфер обмена');
-      }
-    );
-  }
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success("ID скопирован в буфер обмена");
+    });
+  };
 
   return (
-    <CardTitle className="text-lg max-sm:text-base pr-4 " onClick={()=>handleCopy(orderId)}>Заказ #{orderId}</CardTitle>
+    <CardTitle
+      className="flex flex-col  cursor-pointer"
+      onClick={() => handleCopy(orderId)}
+      title={`Заказ #${orderId}`}
+    >
+      Заказ #
+      <span className="text-lg max-sm:text-base max-w-[150px] max-sm:overflow-hidden max-sm:whitespace-nowrap max-sm:text-ellipsis">
+         {orderId}
+      </span>
+     
+    </CardTitle>
   );
 }

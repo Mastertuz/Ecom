@@ -28,9 +28,10 @@ export async function POST() {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 })
     }
 
-    console.log("Creating order for user:", session.user.id)
-    console.log("Cart items:", cartItems.length)
-    console.log("Total price:", totalPrice)
+    const baseUrl = process.env.NODE_ENV === 'production'
+            ? 'https://ecom-y3vl.vercel.app/' 
+            : `${process.env.NEXT_PUBLIC_BASE_URL}`;
+
 
     const order = await prisma.order.create({
       data: {
@@ -56,7 +57,7 @@ export async function POST() {
       },
       confirmation: {
         type: "redirect" as const,
-        return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success?orderId=${order.id}`,
+        return_url: `${baseUrl}/success?orderId=${order.id}`,
       },
       capture: true,
       description: `Заказ #${order.id}`,

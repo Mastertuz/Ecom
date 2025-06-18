@@ -10,7 +10,7 @@ export default function RootLayout({
 }>) {
   return (
 
-        <main className="px-8">
+        <main className="px-8 max-[520px]:px-2">
             <Header/>
         {children}
         <Toaster position="top-center" richColors />

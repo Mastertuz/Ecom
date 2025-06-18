@@ -27,7 +27,7 @@ function SearchInput() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-52 xl:max-w-3xl lg:max-w-2xl md:max-w-md mx-4 sm:max-w-xs max-[480px]:max-w-40  ">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-52 xl:max-w-3xl lg:max-w-2xl md:max-w-md mx-4 sm:max-w-xs max-[480px]:max-w-32 max-[380px]:max-w-22  ">
         <FormField
           control={form.control}
           name="input"
