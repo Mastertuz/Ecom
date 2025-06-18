@@ -28,14 +28,12 @@ async function getSimilarProductName(
   try {
     let responseContent = completion.choices[0].message.content ?? "[]";
 
-    // Remove code block markers if present
     if (responseContent.startsWith("```") && responseContent.endsWith("```")) {
       responseContent = responseContent
         .replace(/^```[a-zA-Z]*\n/, "")
         .replace(/```$/, "");
     }
 
-    // Validate if the response is valid JSON
     if (
       !responseContent.trim().startsWith("[") ||
       !responseContent.trim().endsWith("]")

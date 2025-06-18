@@ -11,7 +11,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { signOut } from "../../../auth";
 
 interface MobileMenuProps {
   session: any;

@@ -80,7 +80,6 @@ export async function POST() {
   } catch (error) {
     console.error("Payment creation error:", error)
 
-    // Более детальная обработка ошибок
     if (error instanceof Error) {
       return NextResponse.json(
         {

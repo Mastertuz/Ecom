@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
     const notification = JSON.parse(body)
     console.log("Parsed webhook notification:", JSON.stringify(notification, null, 2))
 
-    // Базовая проверка структуры уведомления
     if (!notification.object || !notification.event) {
       console.error("Invalid notification format")
       return NextResponse.json({ error: "Invalid notification format" }, { status: 400 })
@@ -21,7 +20,6 @@ export async function POST(request: NextRequest) {
     console.log("Payment status:", payment.status)
     console.log("Payment metadata:", payment.metadata)
 
-    // Проверяем, что это уведомление о платеже
     if (event === "payment.succeeded" && payment.status === "succeeded") {
       const orderId = payment.metadata?.orderId
 
@@ -29,7 +27,6 @@ export async function POST(request: NextRequest) {
         console.log("Processing successful payment for order:", orderId)
 
         try {
-          // Обновляем статус заказа
           const updatedOrder = await prisma.order.update({
             where: { id: orderId },
             data: { status: "paid" },
@@ -37,14 +34,12 @@ export async function POST(request: NextRequest) {
 
           console.log("Order updated successfully:", updatedOrder)
 
-          // Получаем информацию о заказе для очистки корзины
           const order = await prisma.order.findUnique({
             where: { id: orderId },
             select: { userId: true },
           })
 
           if (order) {
-            // Очищаем корзину пользователя
             const deletedItems = await prisma.cartItem.deleteMany({
               where: { userId: order.userId },
             })

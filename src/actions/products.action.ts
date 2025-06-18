@@ -22,7 +22,7 @@ export const createProduct = async (productData: ProductCreateInput) => {
         price: productData.price,
         imageUrl: productData.imageUrl || "",
         status: productData.status || "Активно",
-        category: productData.category || "ВСЕ",
+        category: productData.category,
       },
     })
 
@@ -62,7 +62,6 @@ export const getProductsByName = async (query: string) => {
 
 export const getAllProducts = async (category?: string) => {
   try {
-    // If category is "Все" or undefined, don't filter
     const whereClause = category && category !== "Все" ? { category: category as Category } : {}
 
     const products = await prisma.product.findMany({
@@ -85,7 +84,6 @@ export const getAllProducts = async (category?: string) => {
     return products
   } catch (error) {
     console.error("Error fetching products:", error)
-    // Return empty array instead of throwing
     return []
   }
 }

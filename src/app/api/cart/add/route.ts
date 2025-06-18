@@ -1,4 +1,3 @@
-// app/api/cart/add/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { addToCart } from "@/actions/cart.actions";
 

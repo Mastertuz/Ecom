@@ -138,7 +138,6 @@
 
 
 
-/* Для Chrome, Edge, Safari */
 ::-webkit-scrollbar {
   width: 6px;
   background: #222;
@@ -149,7 +148,6 @@
   border-radius: 4px;
 }
 
-/* Для Firefox */
 * {
   scrollbar-width: thin;
   scrollbar-color: #444 #222;

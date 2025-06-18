@@ -8,7 +8,6 @@ import { Button } from "../ui/button"
 import { Minus, Plus } from "lucide-react"
 import { addToCart, updateCartItemQuantity } from "@/actions/cart.actions"
 import { toast } from "sonner"
-import Error from "next/error"
 
 type Props = {
   product: Product

@@ -25,19 +25,16 @@ export async function GET(request: NextRequest) {
 
     console.log("Checking payment status:", paymentId)
 
-    // Проверяем статус платежа в ЮKassa
     const payment = await checkout.getPayment(paymentId)
 
     console.log("Payment status from YooKassa:", payment.status)
 
-    // Обновляем статус заказа в зависимости от статуса платежа
     if (payment.status === "succeeded") {
       await prisma.order.update({
         where: { id: orderId },
         data: { status: "paid" },
       })
 
-      // Очищаем корзину
       await prisma.cartItem.deleteMany({
         where: { userId: session.user.id },
       })
