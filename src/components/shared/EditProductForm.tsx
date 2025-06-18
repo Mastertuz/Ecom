@@ -89,7 +89,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
         <AlertDialogHeader className="space-y-2 sm:space-y-3">
           <AlertDialogTitle className="text-lg sm:text-xl">Редактировать товар</AlertDialogTitle>
           <AlertDialogDescription className="text-sm sm:text-base">
-            Измените необходимые поля и нажмите "Сохранить".
+            Измените необходимые поля и нажмите Сохранить.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>

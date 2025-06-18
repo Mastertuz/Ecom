@@ -1,4 +1,3 @@
-import { ShoppingBasket } from "lucide-react"
 import Link from "next/link"
 import { auth, signOut } from "../../../auth"
 import { Button } from "@/components/ui/button"
@@ -9,6 +8,7 @@ import MobileMenu from "./MobileMenu"
 async function Header() {
   const session = await auth()
   const isAdmin = session?.user?.role === "admin"
+  if (!session) return null
 
   const handleSignOut = async () => {
     "use server"

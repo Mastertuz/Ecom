@@ -11,9 +11,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Session } from "next-auth";
 
 interface MobileMenuProps {
-  session: any;
+  session: Session;
   isAdmin: boolean;
   onSignOut: () => Promise<void>;
 }
