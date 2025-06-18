@@ -19,7 +19,7 @@ export default function RootLayout({
       <body className=""
       suppressHydrationWarning
       >
-        <main className="px-8">
+        <main className="px-8 max-[520px]:px-2">
         {children}
         <Toaster position="top-center" richColors />
         </main>

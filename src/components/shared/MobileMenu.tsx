@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { signOut } from "../../../auth";
 
 interface MobileMenuProps {
   session: any;
@@ -39,7 +40,12 @@ export default function MobileMenu({
         <div className="flex flex-col gap-4 mt-6 px-4">
           <SheetClose asChild>
             <Button asChild className="w-full justify-start">
-              <Link href={"/cart"}>Главная</Link>
+              <Link href={"/"}>Главная</Link>
+            </Button>
+          </SheetClose>
+           <SheetClose asChild>
+            <Button asChild className="w-full justify-start">
+              <Link href={"/profile"}>Профиль</Link>
             </Button>
           </SheetClose>
           <SheetClose asChild>
@@ -64,15 +70,14 @@ export default function MobileMenu({
                 </SheetClose>
               )}
               <SheetClose asChild>
-                <form action={onSignOut}>
                   <Button
                     type="submit"
                     className="w-full justify-start"
                     variant="destructive"
+                    onClick={async()=>await onSignOut()}
                   >
                     Выйти
                   </Button>
-                </form>
               </SheetClose>
             </>
           ) : (

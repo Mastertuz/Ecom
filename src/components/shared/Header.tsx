@@ -19,12 +19,9 @@ async function Header() {
     <header className="w-full bg-[#0a0a0a] sticky py-4 top-0 mb-6 z-50">
       <nav className="flex justify-between items-center px-4">
         <Link href={"/"}>
-          <h1 className="text-2xl font-bold">E-com</h1>
+          <h1 className="text-2xl font-bold max-sm:text-lg">E-com</h1>
         </Link>
-
           <SearchInput />
-
-        {/* Desktop Navigation - показывается только на экранах 2xl и больше */}
         <div className="hidden 2xl:flex items-center gap-2">
           <Button asChild>
             <Link href={"/cart"}>
@@ -53,13 +50,12 @@ async function Header() {
               <Link href={"/sign-in"}>Войти</Link>
             </Button>
           )}
-
+          <Link href={"/profile"}>
           <UserAvatar />
+          </Link>
         </div>
 
-        {/* Mobile Navigation - показывается на экранах меньше 2xl */}
         <div className="flex 2xl:hidden items-center gap-2">
-          <UserAvatar />
           <MobileMenu session={session} isAdmin={isAdmin} onSignOut={handleSignOut} />
         </div>
       </nav>

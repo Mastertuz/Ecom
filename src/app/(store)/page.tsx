@@ -20,11 +20,11 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <main className="">
       <SaleBanner />
-      <div className="max-w-[1536px] mx-auto my-10 px-4">
+      <div className="max-w-[1536px] mx-auto my-10">
         <div className="mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-2">Товары по категориям</h1>
-            <p className="text-gray-300">
+            <h1 className="text-2xl font-bold text-white mb-2 sm:text-xl">Товары по категориям</h1>
+            <p className="text-gray-300 ">
               {selectedCategory && selectedCategory !== "Все"
                 ? `Категория: ${selectedCategory.replace("_", " и ")}`
                 : "Все категории"}{" "}
@@ -39,7 +39,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <p className="text-gray-400 text-lg">В данной категории товары не найдены</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 max-[380px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 min-[500px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6   gap-4">
             {products?.map((product) => (
               <ProductCard key={product?.id} product={product} />
             ))}
@@ -49,3 +49,5 @@ export default async function Home({ searchParams }: HomeProps) {
     </main>
   )
 }
+
+// max-[520px]:grid-cols-1 max-md:grid-cols-1 grid-cols-3  lg:grid-cols-4  xl:grid-cols-5 2xl:grid-cols-6

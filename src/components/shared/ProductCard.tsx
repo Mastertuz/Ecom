@@ -80,7 +80,7 @@ function ProductCard({ product }: Props) {
   return (
     <div
       className={`
-        border border-gray-300 p-4 w-[220px] rounded-[40px] hover:shadow-gray-300 transition-all duration-200 ease-in-out cursor-pointer
+        border border-gray-300 p-4 w-[220px]  max-lg:w-full rounded-[40px] hover:shadow-gray-300 transition-all duration-200 ease-in-out cursor-pointer
         bg-transparent
         group flex flex-col shadow-sm hover:shadow-md overflow-hidden ${isOutOfStock ? "opacity-50" : ""}
       `}

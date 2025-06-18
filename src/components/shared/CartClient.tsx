@@ -77,14 +77,14 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
   }
 
   return (
-    <div className="container mx-auto p-4 ">
+    <div className="container mx-auto p-4  ">
       <h1 className="text-2xl text-white font-bold mb-4">Ваша корзина</h1>
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-grow space-y-4">
+      <div className="flex flex-col lg:flex-row gap-8 max-[480px]:gap-4">
+        <div className="flex-grow space-y-4 ">
           {cartItems.map((cartItem) => (
             <Card key={cartItem.id}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
+              <CardContent className="p-4 max-[480px]:p-2">
+                <div className="flex items-center justify-between max-[480px]:flex-col ">
                   <div className="flex items-center cursor-pointer flex-1 min-w-0">
                     <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 mr-4">
                       {cartItem.product.imageUrl && (
@@ -107,7 +107,7 @@ function CartClient({ cartItems, totalItems, totalPrice }: CartClientProps) {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center ml-4 flex-shrink-0">
+                  <div className="flex items-center ml-4 flex-shrink-0 max-[480px]:mt-4 max-[480px]:ml-0">
                     <AddToCartButton product={cartItem.product} cartItem={cartItem} />
                   </div>
                 </div>
