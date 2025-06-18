@@ -77,7 +77,6 @@ export default function ProfileForm({ user }: ProfileFormProps) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
-                <p>{imageUrl}</p>
                 <Avatar className="w-24 h-24 md:w-32 md:h-32">
                   <AvatarImage src={imageUrl || "/placeholder.svg"} alt="Фото профиля" 
                   onLoad={()=>console.log("Image loaded successfully")}
