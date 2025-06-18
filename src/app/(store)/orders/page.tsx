@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { auth } from "../../../../auth"
+import { toast } from "sonner"
+import { OrderNumberCopy } from "@/components/shared/CopyToClipboard"
 
 async function OrdersPage() {
   const session = await auth()
@@ -21,6 +23,13 @@ async function OrdersPage() {
     },
     orderBy: { createdAt: "desc" },
   })
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+      toast.success('ID скопирован в буфер обмена');
+      }
+    );
+  }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -52,7 +61,7 @@ async function OrdersPage() {
               <CardHeader>
                 <div className="flex justify-between items-start max-sm:flex-col">
                   <div className="flex flex-wrap flex-col">
-                    <CardTitle className="text-lg max-sm:text-base pr-4 ">Заказ #{order.id}</CardTitle>
+                    <OrderNumberCopy orderId={order.id} />
                     <p className="text-sm text-muted-foreground">
                       {new Date(order.createdAt).toLocaleDateString("ru-RU")}
                     </p>
