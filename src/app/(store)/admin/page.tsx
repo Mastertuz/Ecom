@@ -10,11 +10,7 @@ declare module 'next-auth' {
   }
 }
 
-export default async function AdminPage({
-  searchParams,
-}: {
-  searchParams: { status?: string };
-}) {
+export default async function AdminPage() {
   const session = await auth()
   if (session?.user?.role !== 'admin') return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -29,8 +25,7 @@ export default async function AdminPage({
   );
   const products = await getAllProducts();
   
-  const status = searchParams?.status || '';
-  console.log('Admin Page Status:', status);
+
   
   return <AdminPageContent products={products} />;
 }
