@@ -24,6 +24,7 @@ import { Product } from '../../../typings';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { EditProductDialog } from './EditProductForm';
+import { toast } from 'sonner';
 
 type Props = {
   products: Product[];
@@ -31,6 +32,13 @@ type Props = {
 
 export default function ProductTable({ products }: Props) {
   const router = useRouter();
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+      toast.success('ID скопирован в буфер обмена');
+      }
+    );
+  }
 
   const handleDelete = async (id: string) => {
     try {
@@ -130,7 +138,7 @@ export default function ProductTable({ products }: Props) {
             </TableCell>
             <TableCell>{product.category}</TableCell>
             <TableCell>{product.stock}</TableCell>
-            <TableCell>{product.id}</TableCell>
+            <TableCell onClick={()=>copyToClipboard(product.id)}>{product.id}</TableCell>
           </TableRow>
         ))}
       </TableBody>

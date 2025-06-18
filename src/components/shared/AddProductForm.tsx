@@ -73,10 +73,9 @@ export default function AddProductDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full sm:w-auto">
-          <span className="hidden sm:inline">Добавить товар</span>
-          <span className="sm:hidden">Добавить</span>
-          <PlusCircle className="h-4 w-4 ml-2" />
+        <Button variant="outline" className="w-full max-w-44 max-md:max-w-16 cursor-pointer ">
+          <span className="hidden md:inline">Добавить товар</span>
+          <PlusCircle className="h-4 w-4 ml-2 max-md:ml-0" />
         </Button>
       </DialogTrigger>
 

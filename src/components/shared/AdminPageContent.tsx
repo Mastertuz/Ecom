@@ -44,7 +44,7 @@ export default function AdminPageContent({ products }: { products: Product[] }) 
   return (
     <main className="p-12 space-y-6">
       <Tabs value={activeTab} onValueChange={handleTabChange}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between max-sm:flex-col max-sm:items-start max-sm:space-y-2">
           <TabsList className="bg-muted p-1 rounded-md">
             <TabsTrigger value="ВСЕ" className="px-4 py-2 cursor-pointer">
               ВСЕ

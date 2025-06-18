@@ -39,7 +39,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <p className="text-gray-400 text-lg">В данной категории товары не найдены</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 min-[500px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6   gap-4">
+          <div className="grid grid-cols-1 min-[500px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
             {products?.map((product) => (
               <ProductCard key={product?.id} product={product} />
             ))}
@@ -50,4 +50,4 @@ export default async function Home({ searchParams }: HomeProps) {
   )
 }
 
-// max-[520px]:grid-cols-1 max-md:grid-cols-1 grid-cols-3  lg:grid-cols-4  xl:grid-cols-5 2xl:grid-cols-6
+
