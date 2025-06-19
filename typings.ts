@@ -37,3 +37,18 @@ export interface CartActionResult {
   cartItemId?: string
   quantity?: number
 }
+
+export interface PromoCode {
+  id: string
+  code: string
+  discount: number
+  isActive: boolean
+  expiresAt: Date | null
+  createdAt: Date
+}
+
+export interface SaleBannerData {
+  title: string
+  description: string
+  promoCode: PromoCode | null
+}

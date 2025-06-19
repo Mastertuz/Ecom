@@ -55,16 +55,16 @@ model Session {
 }
 
 enum Status {
-  Активно
-  Неактивно
+  ACTIVE   @map("Активно")
+  INACTIVE @map("Неактивно")
 }
 
 enum Category {
-  Кроссовки
-  Поло
-  Толстовки
-  Кеды
-  Аксессуары
+  SNEAKERS    @map("Кроссовки")
+  POLO        @map("Поло")
+  HOODIES     @map("Толстовки")
+  SHOES       @map("Кеды")
+  ACCESSORIES @map("Аксессуары")
 }
 
 model Product {
@@ -73,8 +73,8 @@ model Product {
   description String?
   price       Float
   imageUrl    String
-  status      Status      @default(Активно)
-  category    Category    @default(Кроссовки)
+  status      Status      @default(ACTIVE)
+  category    Category    @default(SNEAKERS)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   stock       Int         @default(1)
@@ -117,4 +117,13 @@ model OrderItem {
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
+}
+
+model PromoCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  discount  Int      
+  isActive  Boolean  @default(true)
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
 }

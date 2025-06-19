@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { YooCheckout } from "@a2seven/yoo-checkout"
 import { auth } from "../../../../../auth"
 import { getCartItems } from "@/actions/cart.actions"
@@ -9,7 +9,7 @@ const checkout = new YooCheckout({
   secretKey: process.env.YOOKASSA_SECRET_KEY!,
 })
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     const session = await auth()
 
@@ -22,21 +22,41 @@ export async function POST() {
       return NextResponse.json({ error: "Database connection error" }, { status: 500 })
     }
 
+    const { promoCode } = await request.json()
     const { items: cartItems, totalPrice } = await getCartItems()
 
     if (cartItems.length === 0) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 })
     }
 
-    const baseUrl = process.env.NODE_ENV === 'production'
-            ? 'https://ecom-y3vl.vercel.app' // Replace with your primary production domain
-            : `${process.env.NEXT_PUBLIC_BASE_URL}`;
+    let finalPrice = totalPrice
+    let appliedPromo = null
 
+    // Проверяем и применяем промокод если он предоставлен
+    if (promoCode) {
+      const promo = await prisma.promoCode.findUnique({
+        where: { code: promoCode.toUpperCase() },
+      })
+
+      if (promo && promo.isActive && (!promo.expiresAt || promo.expiresAt > new Date())) {
+        const discountAmount = (totalPrice * promo.discount) / 100
+        finalPrice = totalPrice - discountAmount
+        appliedPromo = promo
+        console.log(`Applied promo code: ${promo.code}, discount: ${promo.discount}%, final price: ${finalPrice}`)
+      } else {
+        return NextResponse.json({ error: "Invalid or expired promo code" }, { status: 400 })
+      }
+    }
+
+    const baseUrl =
+      process.env.NODE_ENV === "production"
+        ? "https://ecom-y3vl.vercel.app" 
+        : `${process.env.NEXT_PUBLIC_BASE_URL}`
 
     const order = await prisma.order.create({
       data: {
         userId: session.user.id,
-        total: totalPrice,
+        total: finalPrice,
         status: "pending",
         orderItems: {
           create: cartItems.map((item) => ({
@@ -52,7 +72,7 @@ export async function POST() {
 
     const paymentData = {
       amount: {
-        value: totalPrice.toFixed(2),
+        value: finalPrice.toFixed(2),
         currency: "RUB",
       },
       confirmation: {
@@ -60,10 +80,13 @@ export async function POST() {
         return_url: `${baseUrl}/payment/success?orderId=${order.id}`,
       },
       capture: true,
-      description: `Заказ #${order.id}`,
+      description: `Заказ #${order.id}${appliedPromo ? ` (промокод: ${appliedPromo.code})` : ""}`,
       metadata: {
         orderId: order.id,
         userId: session.user.id,
+        promoCode: appliedPromo?.code || null,
+        originalPrice: totalPrice.toString(),
+        finalPrice: finalPrice.toString(),
       },
     }
 
@@ -77,6 +100,13 @@ export async function POST() {
       paymentId: payment.id,
       confirmationUrl: payment.confirmation?.confirmation_url,
       orderId: order.id,
+      finalPrice: finalPrice,
+      appliedPromo: appliedPromo
+        ? {
+            code: appliedPromo.code,
+            discount: appliedPromo.discount,
+          }
+        : null,
     })
   } catch (error) {
     console.error("Payment creation error:", error)
