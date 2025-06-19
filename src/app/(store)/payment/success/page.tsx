@@ -19,16 +19,7 @@ interface PaymentSuccessProps {
     orderId?: string;
   }>;
 }
-const copyToClipboard = (text: string) => {
-  navigator.clipboard.writeText(text).then(
-    () => {
-      toast.success("Номер заказа скопирован в буфер обмена");
-    },
-    (err) => {
-      toast.error("Не удалось скопировать текст в буфер обмена", err);
-    }
-  );
-};
+
 
 async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
   let order = null;
