@@ -6,7 +6,6 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { YooCheckout } from "@a2seven/yoo-checkout";
 import { auth } from "../../../../../auth";
-import { toast } from "sonner";
 import { OrderNumberCopy } from "@/components/shared/CopyToClipboard";
 
 const checkout = new YooCheckout({
