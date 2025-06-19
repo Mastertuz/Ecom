@@ -83,7 +83,7 @@ async function ProductPage({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8  max-xl:flex max-xl:flex-col">
         <div
           className={`relative aspect-square overflow-hidden rounded-lg cursor-pointer${
             isOutOfStock ? "opacity-50" : ""
@@ -125,24 +125,24 @@ async function ProductPage({
           </div>
 
           <div className="mt-8">
-            <div className="text-white text-2xl mb-6">
+            <div className="text-white text-2xl mb-6 max-sm:text-xl">
               Схожие товары при помощи OpenAI:
             </div>
             {similar && similar.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-4 max-sm:space-y-2">
                 {similar.map((item, index) => (
                   <div
                     key={index}
-                    className="border rounded-lg p-4 bg-gray-800"
+                    className="border rounded-lg p-4 max-sm:p-2 "
                   >
                     <a
                       href={item.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center space-x-4 hover:bg-gray-700 transition-colors rounded p-2"
+                      className="flex items-center space-x-4 max-sm:space-x-2 transition-colors rounded p-2"
                     >
                       <div>
-                        <h2 className="text-lg text-white font-bold underline hover:text-blue-400 transition-colors">
+                        <h2 className="text-lg text-white font-bold hover:underline   transition-colors">
                           {item.name}
                         </h2>
                       </div>

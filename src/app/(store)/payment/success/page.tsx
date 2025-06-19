@@ -1,26 +1,38 @@
-import { Suspense } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { CheckCircle } from "lucide-react"
-import Link from "next/link"
-import { prisma } from "@/lib/prisma"
-import { YooCheckout } from "@a2seven/yoo-checkout"
-import { auth } from "../../../../../auth"
+import { Suspense } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import { YooCheckout } from "@a2seven/yoo-checkout";
+import { auth } from "../../../../../auth";
+import { toast } from "sonner";
+import { OrderNumberCopy } from "@/components/shared/CopyToClipboard";
 
 const checkout = new YooCheckout({
   shopId: process.env.YUKASSA_SHOP_ID!,
   secretKey: process.env.YUKASSA_SECRET_KEY!,
-})
-console.log(":", checkout)
+});
+console.log(":", checkout);
 interface PaymentSuccessProps {
   searchParams: Promise<{
-    orderId?: string
-  }>
+    orderId?: string;
+  }>;
 }
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text).then(
+    () => {
+      toast.success("Номер заказа скопирован в буфер обмена");
+    },
+    (err) => {
+      toast.error("Не удалось скопировать текст в буфер обмена", err);
+    }
+  );
+};
 
 async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
-  let order = null
-  let paymentUpdated = false
+  let order = null;
+  let paymentUpdated = false;
 
   if (orderId) {
     try {
@@ -33,35 +45,35 @@ async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
             },
           },
         },
-      })
+      });
 
       if (order && order.status === "pending") {
-        console.log("Order status is pending, checking payment status...")
+        console.log("Order status is pending, checking payment status...");
 
         try {
-          const session = await auth()
+          const session = await auth();
 
           if (session?.user?.id) {
             await prisma.order.update({
               where: { id: orderId },
               data: { status: "paid" },
-            })
+            });
 
             await prisma.cartItem.deleteMany({
               where: { userId: session.user.id },
-            })
+            });
 
-            order = { ...order, status: "paid" }
-            paymentUpdated = true
+            order = { ...order, status: "paid" };
+            paymentUpdated = true;
 
-            console.log(`Order ${orderId} updated to paid and cart cleared`)
+            console.log(`Order ${orderId} updated to paid and cart cleared`);
           }
         } catch (error) {
-          console.error("Error updating payment status:", error)
+          console.error("Error updating payment status:", error);
         }
       }
     } catch (error) {
-      console.error("Error fetching order:", error)
+      console.error("Error fetching order:", error);
     }
   }
 
@@ -72,21 +84,32 @@ async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
           <div className="flex justify-center mb-4">
             <CheckCircle className="h-16 w-16 text-green-500" />
           </div>
-          <CardTitle className="text-2xl text-green-600">Оплата прошла успешно!</CardTitle>
-          {paymentUpdated && <p className="text-sm text-green-600 mt-2">Статус заказа обновлен, корзина очищена</p>}
+          <CardTitle className="text-2xl text-green-600">
+            Оплата прошла успешно!
+          </CardTitle>
+          {paymentUpdated && (
+            <p className="text-sm text-green-600 mt-2">
+              Статус заказа обновлен, корзина очищена
+            </p>
+          )}
         </CardHeader>
         <CardContent className="space-y-4">
           {order ? (
             <div className="text-left space-y-4">
               <div className=" p-4 rounded-lg">
-                <h3 className="font-semibold mb-2">Детали заказа #{order.id}</h3>
-                <p className="text-sm text-white mb-2">
+                  <OrderNumberCopy orderId={order.id}/>
+                <p className="text-sm text-white my-2">
                   Дата: {new Date(order.createdAt).toLocaleDateString("ru-RU")}
                 </p>
                 <p className="text-sm text-white mb-2">
-                  Статус: <span className="font-medium">{order.status === "paid" ? "Оплачен" : order.status}</span>
+                  Статус:{" "}
+                  <span className="font-medium">
+                    {order.status === "paid" ? "Оплачен" : order.status}
+                  </span>
                 </p>
-                <p className="text-sm text-gray-white mb-4">Сумма: {order.total}₽</p>
+                <p className="text-sm text-gray-white mb-4">
+                  Сумма: {order.total}₽
+                </p>
 
                 <div className="space-y-2">
                   <h4 className="font-medium">Товары:</h4>
@@ -102,10 +125,12 @@ async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
               </div>
             </div>
           ) : (
-            <p className="text-gray-600">Спасибо за покупку! Ваш заказ успешно оплачен.</p>
+            <p className="text-gray-600">
+              Спасибо за покупку! Ваш заказ успешно оплачен.
+            </p>
           )}
 
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-center max-sm:flex-col">
             <Button asChild>
               <Link href="/">Продолжить покупки</Link>
             </Button>
@@ -116,14 +141,16 @@ async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
-export default async function PaymentSuccessPage({ searchParams }: PaymentSuccessProps) {
-  const {orderId }= await searchParams
+export default async function PaymentSuccessPage({
+  searchParams,
+}: PaymentSuccessProps) {
+  const { orderId } = await searchParams;
   return (
     <Suspense fallback={<div>Загрузка...</div>}>
       <PaymentSuccessContent orderId={orderId} />
     </Suspense>
-  )
+  );
 }
