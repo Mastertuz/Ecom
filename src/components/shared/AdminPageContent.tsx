@@ -5,6 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AddProductForm from '@/components/shared/AddProductForm';
 import ProductTable from '@/components/shared/ProductTable';
 import { Product, ProductStatus } from '../../../typings';
+import AddPromoCodeDialog from './AddPromoCodeForm';
+import { Button } from '../ui/button';
+import Link from 'next/link';
 
 const statusMap: Record<ProductStatus, string> = {
   ACTIVE: 'Активно',
@@ -50,7 +53,14 @@ export default function AdminPageContent({ products }: { products: Product[] }) 
             <TabsTrigger value="Активно" className="px-4 py-2 cursor-pointer">Активно</TabsTrigger>
             <TabsTrigger value="Неактивно" className="px-4 py-2 cursor-pointer">Неактивно</TabsTrigger>
           </TabsList>
-          <AddProductForm />
+          <div className='space-x-2'>
+          <Button asChild>
+            <Link href="/admin/promocodes" className="cursor-pointer">
+            Управление промокодами
+            </Link>
+          </Button>
+          <AddProductForm/>
+          </div>
         </div>
 
         {['Все', 'Активно', 'Неактивно'].map(tab => {

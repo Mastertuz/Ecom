@@ -94,7 +94,7 @@ export default function AddProductDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Добавить товар</Button>
+        <Button >Добавить товар</Button>
       </DialogTrigger>
 
       <DialogContent>
