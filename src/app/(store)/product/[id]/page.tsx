@@ -12,9 +12,10 @@ export const revalidate = 60;
 export default async function ProductPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const product = await getProductById(params.id);
+  const { id } = await params;
+  const product = await getProductById(id);
   if (!product) return notFound();
 
   const cartData = await getCartItems();
