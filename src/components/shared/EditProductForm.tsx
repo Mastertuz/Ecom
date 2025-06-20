@@ -26,6 +26,7 @@ import { useState } from "react"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 import { updateProduct } from "@/actions/products.action"
 import { Category, Status } from "@prisma/client"
+import Image from "next/image"
 
 const categories = Object.values(Category);
 
@@ -239,11 +240,14 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
               <FormLabel className="text-sm sm:text-base">Изображение товара</FormLabel>
               {imageUrl ? (
                 <div className="mt-3">
-                  <div className="relative w-full">
-                    <img
+                  <div className="relative w-full h-32 sm:h-40">
+                    <Image
                       src={imageUrl || "/placeholder.svg"}
                       alt="Product"
-                      className="h-32 sm:h-40 w-full object-cover rounded-md border"
+                      fill
+                      className="object-contain rounded-md border"
+                      sizes="(max-width: 640px) 100vw, 100vw"
+                      priority
                     />
                   </div>
                   <Button

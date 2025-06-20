@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AddProductForm from '@/components/shared/AddProductForm';
 import ProductTable from '@/components/shared/ProductTable';
 import { Product, ProductStatus } from '../../../typings';
-import AddPromoCodeDialog from './AddPromoCodeForm';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 
@@ -47,15 +46,15 @@ export default function AdminPageContent({ products }: { products: Product[] }) 
   return (
     <main className="p-12 max-sm:p-2 space-y-6">
       <Tabs value={activeTab} onValueChange={handleTabChange}>
-        <div className="flex items-center justify-between max-sm:flex-col max-sm:items-start max-sm:space-y-2">
+        <div className="flex items-center justify-between max-lg:flex-col max-lg:items-start max-lg:space-y-4">
           <TabsList className="bg-muted p-1 rounded-md">
             <TabsTrigger value="Все" className="px-4 py-2 cursor-pointer">ВСЕ</TabsTrigger>
             <TabsTrigger value="Активно" className="px-4 py-2 cursor-pointer">Активно</TabsTrigger>
             <TabsTrigger value="Неактивно" className="px-4 py-2 cursor-pointer">Неактивно</TabsTrigger>
           </TabsList>
-          <div className='space-x-2'>
-          <Button asChild>
-            <Link href="/admin/promocodes" className="cursor-pointer">
+          <div className='space-x-2  max-lg:flex max-lg:flex-col max-lg:space-x-0 max-lg:space-y-4'>
+          <Button asChild className='cursor-pointer'>
+            <Link href="/admin/promocodes">
             Управление промокодами
             </Link>
           </Button>

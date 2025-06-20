@@ -36,6 +36,7 @@ import { z } from 'zod';
 import { createProduct } from '@/actions/products.action';
 import type { OurFileRouter } from '@/app/api/uploadthing/core';
 import { Category, Status as ProductStatus } from '@prisma/client';
+import Image from "next/image";
 
 const categories = Object.values(Category);
 const statuses = Object.values(ProductStatus);
@@ -94,7 +95,7 @@ export default function AddProductDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button >Добавить товар</Button>
+        <Button className='cursor-pointer'>Добавить товар</Button>
       </DialogTrigger>
 
       <DialogContent>
@@ -220,12 +221,23 @@ export default function AddProductDialog() {
               <FormLabel>Изображение товара</FormLabel>
               {imageUrl ? (
                 <div className="mt-3">
-                  <img
-                    src={imageUrl}
-                    alt="Product"
-                    className="h-40 w-full object-cover rounded-md border"
-                  />
-                  <Button type="button" variant="outline" size="sm" className="mt-2" onClick={() => setImageUrl('')}>
+                  <div className="relative w-full h-40">
+                    <Image
+                      src={imageUrl}
+                      alt="Product"
+                      fill
+                      className="object-contain rounded-md border"
+                      sizes="(max-width: 640px) 100vw, 100vw"
+                      priority
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => setImageUrl('')}
+                  >
                     Изменить изображение
                   </Button>
                 </div>

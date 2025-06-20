@@ -3,9 +3,10 @@
 import { PromoCode } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AddPromoCodeDialog from "@/components/shared/AddPromoCodeForm";
-import { Badge } from "@/components/ui/badge";
 import EditPromoCodeDialog from "./EditPromoCodeForm";
 import DeletePromoCodeButton from "./DeletePromoCode";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "sonner";
 
 export default function PromoCodesPanel({
   promocodes,
@@ -44,6 +45,12 @@ export default function PromoCodesPanel({
 }
 
 function PromoTable({ data }: { data: PromoCode[] }) {
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success('ID скопирован в буфер обмена');
+    });
+  };
+
   if (!data.length) {
     return (
       <div className="text-muted-foreground py-8 text-center text-sm">
@@ -53,46 +60,57 @@ function PromoTable({ data }: { data: PromoCode[] }) {
   }
 
   return (
-    <div className="overflow-auto border rounded-lg">
-      <table className="min-w-full table-auto text-sm">
-        <thead className="bg-muted text-muted-foreground">
-          <tr>
-            <th className="p-3 text-left">Код</th>
-            <th className="p-3 text-left">Скидка</th>
-            <th className="p-3 text-left">Активность</th>
-            <th className="p-3 text-left">Истекает</th>
-            <th className="p-3 text-left">Название</th>
-            <th className="p-3 text-left">Описание</th>
-            <th className="p-3 text-left">Действия</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((promo) => (
-            <tr key={promo.id} className="border-t">
-              <td className="p-3 font-mono">{promo.code}</td>
-              <td className="p-3">{promo.discount}%</td>
-              <td className="p-3">
-                <Badge variant={promo.isActive ? "default" : "destructive"}>
-                  {promo.isActive ? "Активен" : "Неактивен"}
-                </Badge>
-              </td>
-              <td className="p-3">
-                {promo.expiresAt
-                  ? new Date(promo.expiresAt).toLocaleDateString("ru-RU")
-                  : "—"}
-              </td>
-              <td className="p-3">{promo.title || "—"}</td>
-              <td className="p-3">
-                <span>{promo.description || "—"}</span>
-              </td>
-              <td className="p-3 flex flex-wrap gap-2 items-center">
-                <EditPromoCodeDialog promo={promo} />
-                <DeletePromoCodeButton promoId={promo.id} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Код</TableHead>
+          <TableHead>Скидка</TableHead>
+          <TableHead>Статус</TableHead>
+          <TableHead>Истекает</TableHead>
+          <TableHead>Название</TableHead>
+          <TableHead>Описание</TableHead>
+          <TableHead>ID</TableHead>
+          <TableHead>Действия</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {data.map((promo) => (
+          <TableRow key={promo.id}>
+            <TableCell className="font-mono">{promo.code}</TableCell>
+            <TableCell>{promo.discount}%</TableCell>
+            <TableCell>
+              <span
+                className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                  promo.isActive
+                    ? "bg-green-500 text-black ring-green-600/20"
+                    : "bg-red-500 text-black ring-gray-600/20"
+                }`}
+              >
+                {promo.isActive ? "Активен" : "Неактивен"}
+              </span>
+            </TableCell>
+            <TableCell>
+              {promo.expiresAt
+                ? new Date(promo.expiresAt).toLocaleDateString("ru-RU")
+                : "—"}
+            </TableCell>
+            <TableCell>{promo.title || "—"}</TableCell>
+            <TableCell>
+              <span>{promo.description || "—"}</span>
+            </TableCell>
+            <TableCell
+              onClick={() => copyToClipboard(promo.id)}
+              className="cursor-pointer hover:text-blue-600"
+            >
+              {promo.id}
+            </TableCell>
+            <TableCell className="space-x-2">
+              <EditPromoCodeDialog promo={promo} />
+              <DeletePromoCodeButton promoId={promo.id} />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
