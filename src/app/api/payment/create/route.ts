@@ -32,7 +32,6 @@ export async function POST(request: NextRequest) {
     let finalPrice = totalPrice
     let appliedPromo = null
 
-    // Проверяем и применяем промокод если он предоставлен
     if (promoCode) {
       const promo = await prisma.promoCode.findUnique({
         where: { code: promoCode.toUpperCase() },

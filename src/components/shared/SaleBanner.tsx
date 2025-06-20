@@ -9,11 +9,11 @@ interface SaleBannerData {
 
 async function getPromoData(): Promise<SaleBannerData | null> {
   try {
-    const baseUrl = process.env.NODE_ENV=== 'production'?
-    process.env.VERCEL_URL 
-    :
-    process.env.NEXT_PUBLIC_BASE_URL
-
+     const baseUrl =
+      process.env.NODE_ENV === "production"
+        ? "https://ecom-y3vl.vercel.app" 
+        : `${process.env.NEXT_PUBLIC_BASE_URL}`
+    
     const res = await fetch(`${baseUrl}/api/promo/active`)
 
     if (!res.ok) {
@@ -30,7 +30,7 @@ async function getPromoData(): Promise<SaleBannerData | null> {
 
 export default async function SaleBanner() {
   const bannerData = await getPromoData()
-
+  console.log(bannerData)
   if (!bannerData?.promoCode || !bannerData.promoCode.isActive) {
     return null
   }
