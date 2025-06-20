@@ -41,3 +41,8 @@ export interface SaleBannerData {
   description: string
   promoCode: PromoCode | null
 }
+export interface Cart {
+  items: CartItem[];
+  totalItems: number;
+  totalPrice: number;
+}

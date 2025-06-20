@@ -24,8 +24,8 @@ export async function GET() {
       })
     }
 
-    let title = promoCode.title
-    let description = promoCode.description
+    const title = promoCode.title
+    const description = promoCode.description
 
     return NextResponse.json({
       title,

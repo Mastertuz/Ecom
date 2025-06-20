@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { auth } from "../../auth"
-import type { Cart } from "../../typings" 
+import { Cart } from "../../typings"
 
 interface CartActionResult {
   success: boolean
