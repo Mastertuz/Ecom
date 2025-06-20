@@ -25,19 +25,6 @@ export interface CartItem {
   product: Product
 }
 
-export interface Cart {
-  items: CartItem[]
-  totalItems: number
-  totalPrice: number
-}
-
-export interface CartActionResult {
-  success: boolean
-  message: string
-  cartItemId?: string
-  quantity?: number
-}
-
 export interface PromoCode {
   id: string
   code: string
@@ -45,6 +32,8 @@ export interface PromoCode {
   isActive: boolean
   expiresAt: Date | null
   createdAt: Date
+  description?: string
+  title?: string
 }
 
 export interface SaleBannerData {

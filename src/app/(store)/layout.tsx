@@ -9,7 +9,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-
         <main className="px-8 max-[520px]:px-2">
             <Header/>
         {children}

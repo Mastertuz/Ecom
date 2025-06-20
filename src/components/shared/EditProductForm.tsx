@@ -25,9 +25,17 @@ import { UploadDropzone } from "@uploadthing/react"
 import { useState } from "react"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 import { updateProduct } from "@/actions/products.action"
-import { Category } from "@prisma/client"
+import { Category, Status } from "@prisma/client"
 
-const categories = Object.values(Category)
+const categories = Object.values(Category);
+
+const categoryLabels: Record<Category, string> = {
+  SNEAKERS: 'Кроссовки',
+  POLO: 'Поло',
+  HOODIES: 'Толстовки',
+  SHOES: 'Кеды',
+  ACCESSORIES: 'Аксессуары',
+};
 
 const productSchema = z.object({
   name: z.string().min(1, "Название обязательно"),
@@ -45,6 +53,9 @@ interface EditProductDialogProps {
   product: Product
 }
 
+
+
+
 export function EditProductDialog({ product }: EditProductDialogProps) {
   const closeRef = useRef<HTMLButtonElement>(null)
 
@@ -57,7 +68,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
       imageUrl: product.imageUrl || "",
       stock: product.stock,
       category: product.category,
-      status: product.status,
+      status: product.status === "ACTIVE" ? "Активно" : "Неактивно",
     },
   })
 
@@ -69,8 +80,13 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
       return
     }
 
+    const statusMap: Record<string, string> = {
+      "Активно": "ACTIVE",
+      "Неактивно": "INACTIVE",
+    }
+
     try {
-      await updateProduct(product.id, { ...data, imageUrl })
+      await updateProduct(product.id, { ...data, imageUrl: imageUrl, status: statusMap[data.status] as Status })
       closeRef.current?.click()
     } catch (err) {
       console.error("Ошибка при обновлении товара:", err)
@@ -124,7 +140,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                       <SelectContent>
                         {categories.map((category) => (
                           <SelectItem key={category} value={category} className="text-sm sm:text-base">
-                            {category}
+                            {categoryLabels[category as Category]}
                           </SelectItem>
                         ))}
                       </SelectContent>

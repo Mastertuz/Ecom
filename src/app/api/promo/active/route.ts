@@ -24,10 +24,9 @@ export async function GET() {
       })
     }
 
-    let title = "Специальное предложение"
-    let description = "Успейте получить скидку на все товары в корзине"
+    let title = promoCode.title
+    let description = promoCode.description
 
-    
     return NextResponse.json({
       title,
       description,

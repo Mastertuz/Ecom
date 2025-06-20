@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Dialog,
@@ -8,101 +8,115 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-import { UploadDropzone } from "@uploadthing/react"
-import { useRef, useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { createProduct } from "@/actions/products.action"
-import { PlusCircle } from "lucide-react"
-import type { OurFileRouter } from "@/app/api/uploadthing/core"
-import { Category } from "@prisma/client"
+import { UploadDropzone } from '@uploadthing/react';
+import { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { createProduct } from '@/actions/products.action';
+import type { OurFileRouter } from '@/app/api/uploadthing/core';
+import { Category, Status as ProductStatus } from '@prisma/client';
 
-const categories = Object.values(Category)
+const categories = Object.values(Category);
+const statuses = Object.values(ProductStatus);
+
+const categoryLabels: Record<Category, string> = {
+  SNEAKERS: 'Кроссовки',
+  POLO: 'Поло',
+  HOODIES: 'Толстовки',
+  SHOES: 'Кеды',
+  ACCESSORIES: 'Аксессуары',
+};
 
 const productSchema = z.object({
-  name: z.string().min(1, "Название обязательно"),
+  name: z.string().min(1, 'Название обязательно'),
   description: z.string().optional(),
-  price: z.coerce.number().min(0, "Цена должна быть положительной"),
-  stock: z.coerce.number().min(1, "Количество товара не может быть меньше 1"),
+  price: z.coerce.number().min(0, 'Цена должна быть положительной'),
+  stock: z.coerce.number().min(1, 'Количество товара не может быть меньше 1'),
   category: z.nativeEnum(Category),
-  status: z.enum(["Активно", "Неактивно"]),
-})
+  status: z.nativeEnum(ProductStatus),
+});
 
-type ProductFormData = z.infer<typeof productSchema>
+type ProductFormData = z.infer<typeof productSchema>;
 
 export default function AddProductDialog() {
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       price: 0,
       stock: 1,
-      category: Category.Кроссовки,
-      status: "Активно",
+      category: Category.SNEAKERS,
+      status: ProductStatus.ACTIVE,
     },
-  })
+  });
 
-  const [imageUrl, setImageUrl] = useState("")
-  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const [imageUrl, setImageUrl] = useState('');
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const onSubmit = async (data: ProductFormData) => {
     if (!imageUrl) {
-      alert("Пожалуйста, загрузите изображение.")
-      return
+      alert('Пожалуйста, загрузите изображение.');
+      return;
     }
 
     try {
-      await createProduct({ ...data, imageUrl })
-      form.reset()
-      setImageUrl("")
-      closeButtonRef.current?.click()
+      await createProduct({ ...data, imageUrl });
+      form.reset();
+      setImageUrl('');
+      closeButtonRef.current?.click();
     } catch (err) {
-      console.error("Ошибка при создании:", err)
+      console.error('Ошибка при создании:', err);
     }
-  }
+  };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full max-w-44 max-md:max-w-16 cursor-pointer ">
-          <span className="hidden md:inline">Добавить товар</span>
-          <PlusCircle className="h-4 w-4 ml-2 max-md:ml-0" />
-        </Button>
+        <Button variant="outline">Добавить товар</Button>
       </DialogTrigger>
 
-      <DialogContent className="w-[95vw] max-w-[600px] max-h-[95vh] overflow-y-auto p-4 sm:p-6">
-        <DialogHeader className="space-y-2 sm:space-y-3">
-          <DialogTitle className="text-lg sm:text-xl">Добавление товара</DialogTitle>
-          <DialogDescription className="text-sm sm:text-base">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Добавление товара</DialogTitle>
+          <DialogDescription>
             Заполните информацию о товаре и загрузите изображение.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm sm:text-base">Название</FormLabel>
+                  <FormLabel>Название</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Введите название товара"
-                      className="h-10 sm:h-11 text-sm sm:text-base"
-                      {...field}
-                    />
+                    <Input placeholder="Название товара" {...field} />
                   </FormControl>
-                  <FormMessage className="text-xs sm:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -113,22 +127,22 @@ export default function AddProductDialog() {
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm sm:text-base">Категория</FormLabel>
+                    <FormLabel>Категория</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="h-10 sm:h-11 text-sm sm:text-base">
+                        <SelectTrigger>
                           <SelectValue placeholder="Выберите категорию" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {categories.map((category) => (
-                          <SelectItem key={category} value={category} className="text-sm sm:text-base">
-                            {category}
+                          <SelectItem key={category} value={category}>
+                            {categoryLabels[category as Category]}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage className="text-xs sm:text-sm" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -138,23 +152,22 @@ export default function AddProductDialog() {
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm sm:text-base">Статус</FormLabel>
+                    <FormLabel>Статус</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="h-10 sm:h-11 text-sm sm:text-base">
+                        <SelectTrigger>
                           <SelectValue placeholder="Выберите статус" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Активно" className="text-sm sm:text-base">
-                          Активно
-                        </SelectItem>
-                        <SelectItem value="Неактивно" className="text-sm sm:text-base">
-                          Неактивно
-                        </SelectItem>
+                        {statuses.map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {status === 'ACTIVE' ? 'Активно' : 'Неактивно'}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage className="text-xs sm:text-sm" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -165,15 +178,11 @@ export default function AddProductDialog() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm sm:text-base">Описание</FormLabel>
+                  <FormLabel>Описание</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Описание товара"
-                      className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base resize-none"
-                      {...field}
-                    />
+                    <Textarea placeholder="Описание товара" {...field} />
                   </FormControl>
-                  <FormMessage className="text-xs sm:text-sm" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -184,108 +193,66 @@ export default function AddProductDialog() {
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm sm:text-base">Цена (₽)</FormLabel>
+                    <FormLabel>Цена (₽)</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Введите цену"
-                        className="h-10 sm:h-11 text-sm sm:text-base"
-                        {...field}
-                      />
+                      <Input type="number" placeholder="Цена товара" {...field} />
                     </FormControl>
-                    <FormMessage className="text-xs sm:text-sm" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="stock"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm sm:text-base">Количество</FormLabel>
+                    <FormLabel>Количество</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Введите количество"
-                        className="h-10 sm:h-11 text-sm sm:text-base"
-                        {...field}
-                      />
+                      <Input type="number" placeholder="Количество товара" {...field} />
                     </FormControl>
-                    <FormMessage className="text-xs sm:text-sm" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
 
             <div>
-              <FormLabel className="text-sm sm:text-base">Изображение товара</FormLabel>
+              <FormLabel>Изображение товара</FormLabel>
               {imageUrl ? (
                 <div className="mt-3">
-                  <div className="relative w-full">
-                    <img
-                      src={imageUrl || "/placeholder.svg"}
-                      alt="Uploaded"
-                      className="h-32 sm:h-40 w-full object-cover rounded-md border"
-                    />
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="mt-3 w-full sm:w-auto text-xs sm:text-sm h-8 sm:h-9"
-                    onClick={() => setImageUrl("")}
-                  >
+                  <img
+                    src={imageUrl}
+                    alt="Product"
+                    className="h-40 w-full object-cover rounded-md border"
+                  />
+                  <Button type="button" variant="outline" size="sm" className="mt-2" onClick={() => setImageUrl('')}>
                     Изменить изображение
                   </Button>
                 </div>
               ) : (
-                <div className="mt-3">
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-2 sm:p-4">
-                    <UploadDropzone<OurFileRouter, "postImage">
-                      endpoint="postImage"
-                      onClientUploadComplete={(res) => {
-                        if (res && res[0]?.url) {
-                          setImageUrl(res[0].url)
-                        }
-                      }}
-                      onUploadError={(error: Error) => {
-                        alert(`Ошибка загрузки: ${error.message}`)
-                      }}
-                      className="ut-button:h-8 sm:ut-button:h-10 ut-button:text-xs sm:ut-button:text-sm ut-allowed-content:text-xs sm:ut-allowed-content:text-sm"
-                    />
-                  </div>
-                  <p className="text-xs sm:text-sm text-red-500 mt-2">
-                    * Изображение обязательно для добавления товара
-                  </p>
-                </div>
+                <UploadDropzone<OurFileRouter, 'postImage'>
+                  endpoint="postImage"
+                  onClientUploadComplete={(res) => {
+                    if (res && res[0]?.url) setImageUrl(res[0].url);
+                  }}
+                  onUploadError={(err) => alert(`Ошибка загрузки: ${err.message}`)}
+                />
               )}
             </div>
 
-            <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
+            <DialogFooter className="pt-4 flex flex-col sm:flex-row gap-2">
               <DialogTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full sm:w-auto order-2 sm:order-1 h-10 sm:h-11 text-sm sm:text-base"
-                >
+                <Button type="button" variant="outline" ref={closeButtonRef}>
                   Отменить
                 </Button>
               </DialogTrigger>
-              <Button
-                type="submit"
-                disabled={form.formState.isSubmitting || !imageUrl}
-                className="w-full sm:w-auto order-1 sm:order-2 h-10 sm:h-11 text-sm sm:text-base"
-              >
-                {form.formState.isSubmitting ? "Добавление..." : "Добавить товар"}
+              <Button type="submit" disabled={form.formState.isSubmitting || !imageUrl}>
+                {form.formState.isSubmitting ? 'Добавление...' : 'Добавить товар'}
               </Button>
-              <DialogTrigger asChild>
-                <button type="button" ref={closeButtonRef} className="hidden" />
-              </DialogTrigger>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

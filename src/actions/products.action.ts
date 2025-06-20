@@ -1,7 +1,7 @@
 "use server"
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
-import type { Category } from "@prisma/client"
+import type { Category, Status } from "@prisma/client"
 
 interface ProductCreateInput {
   name: string
@@ -10,7 +10,7 @@ interface ProductCreateInput {
   stock: number
   imageUrl: string
   category?: Category
-  status?: "Активно" | "Неактивно"
+  status?: Status
 }
 
 export const createProduct = async (productData: ProductCreateInput) => {
@@ -21,8 +21,9 @@ export const createProduct = async (productData: ProductCreateInput) => {
         description: productData.description || "",
         price: productData.price,
         imageUrl: productData.imageUrl || "",
-        status: productData.status || "Активно",
+        status: productData.status || "ACTIVE",
         category: productData.category,
+        stock: productData.stock,
       },
     })
 

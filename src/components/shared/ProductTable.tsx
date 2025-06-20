@@ -20,7 +20,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Product } from '../../../typings';
+import { Product, ProductStatus, Category } from '../../../typings';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { EditProductDialog } from './EditProductForm';
@@ -30,39 +30,46 @@ type Props = {
   products: Product[];
 };
 
+const statusLabels: Record<ProductStatus, string> = {
+  ACTIVE: 'Активно',
+  INACTIVE: 'Неактивно',
+};
+
+const categoryLabels: Record<Category, string> = {
+  SNEAKERS: 'Кроссовки',
+  POLO: 'Поло',
+  HOODIES: 'Толстовки',
+  SHOES: 'Кеды',
+  ACCESSORIES: 'Аксессуары',
+};
+
 export default function ProductTable({ products }: Props) {
   const router = useRouter();
+
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
+    navigator.clipboard.writeText(text).then(() => {
       toast.success('ID скопирован в буфер обмена');
-      }
-    );
-  }
+    });
+  };
 
   const handleDelete = async (id: string) => {
     try {
       const res = await fetch('/api/products', {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
 
       if (res.ok) {
+        toast.success('Товар успешно удалён');
         router.refresh();
       } else {
-        let errorMessage = 'Не удалось удалить товар';
-        try {
-          const data = await res.json();
-          errorMessage = data?.error || errorMessage;
-        } catch {}
-        alert(`Ошибка: ${errorMessage}`);
+        const data = await res.json().catch(() => ({}));
+        toast.error(data.error || 'Не удалось удалить товар');
       }
     } catch (err) {
       console.error('Ошибка при удалении:', err);
-      alert('Произошла ошибка при удалении товара.');
+      toast.error('Произошла ошибка при удалении товара.');
     }
   };
 
@@ -86,7 +93,7 @@ export default function ProductTable({ products }: Props) {
           <TableRow key={product.id}>
             <TableCell>
               <Image
-                src={product?.imageUrl ?? ''}
+                src={product.imageUrl || '/fallback.png'}
                 alt={product.name}
                 width={128}
                 height={96}
@@ -97,18 +104,16 @@ export default function ProductTable({ products }: Props) {
             <TableCell>
               <span
                 className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                  product.status === 'Активно'
+                  product.status === 'ACTIVE'
                     ? 'bg-green-500 text-black ring-green-600/20'
                     : 'bg-red-500 text-black ring-gray-600/20'
                 }`}
               >
-                {product.status}
+                {statusLabels[product.status]}
               </span>
             </TableCell>
             <TableCell className="font-semibold">{product.price} ₽</TableCell>
-            <TableCell>
-              {new Date(product.updatedAt).toLocaleDateString()}
-            </TableCell>
+            <TableCell>{new Date(product.updatedAt).toLocaleDateString()}</TableCell>
             <TableCell className="space-x-2">
               <EditProductDialog product={product} />
               <AlertDialog>
@@ -123,8 +128,7 @@ export default function ProductTable({ products }: Props) {
                       Удалить товар «{product.name}»?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      Это действие нельзя отменить. Товар будет удалён
-                      безвозвратно.
+                      Это действие нельзя отменить. Товар будет удалён навсегда.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -136,9 +140,14 @@ export default function ProductTable({ products }: Props) {
                 </AlertDialogContent>
               </AlertDialog>
             </TableCell>
-            <TableCell>{product.category}</TableCell>
+            <TableCell>{categoryLabels[product.category]}</TableCell>
             <TableCell>{product.stock}</TableCell>
-            <TableCell onClick={()=>copyToClipboard(product.id)}>{product.id}</TableCell>
+            <TableCell
+              onClick={() => copyToClipboard(product.id)}
+              className="cursor-pointer hover:text-blue-600"
+            >
+              {product.id}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
