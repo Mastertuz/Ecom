@@ -10,7 +10,11 @@ interface SaleBannerData {
 
 async function getPromoData(): Promise<SaleBannerData | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/promo/active`)
+     const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ??
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
+    const res = await fetch(`${baseUrl}/api/promo/active`);
 
     if (!res.ok) return null
 
