@@ -96,9 +96,7 @@ export default function AddProductDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button className='cursor-pointer'>Добавить товар</Button>
-      </DialogTrigger>
-
-      <DialogContent>
+      </DialogTrigger>      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Добавление товара</DialogTitle>
           <DialogDescription>

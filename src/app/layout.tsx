@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className=""
+      <body 
       suppressHydrationWarning
       >
         <main className="px-8 max-[520px]:px-2">
