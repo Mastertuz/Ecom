@@ -148,9 +148,4 @@
   border-radius: 4px;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #444 #222;
-}
-html { overflow-y: scroll; }
-body { overflow-x: hidden; }
+

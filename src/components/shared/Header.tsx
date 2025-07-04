@@ -16,7 +16,7 @@ async function Header() {
 
   return (
     <header className="w-full bg-[#0a0a0a] sticky py-4 top-0 mb-6 z-50">
-      <nav className="flex justify-between items-center px-4">
+      <nav className="flex justify-between items-center">
         <Link href={"/"}>
           <h1 className="text-2xl font-bold max-sm:text-lg">E-com</h1>
         </Link>

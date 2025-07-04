@@ -38,7 +38,7 @@ async function OrdersPage() {
   }
 
   return (
-    <div className="container mx-auto  p-4 max-w-4xl">
+    <div className="container mx-auto ">
       <h1 className="text-2xl font-bold mb-6 text-white">Мои заказы</h1>
 
       {orders.length === 0 ? (

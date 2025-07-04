@@ -49,9 +49,8 @@ export default function CategoryFilter() {
   }
 
   return (
-    <div className="w-full max-w-full sm:max-w-52 lg:max-w-xs">
       <Select value={getCurrentDisplayValue()} onValueChange={handleCategoryChange}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full max-w-full sm:max-w-52 lg:max-w-xs">
           <SelectValue placeholder="Выберите категорию" />
         </SelectTrigger>
         <SelectContent>
@@ -65,6 +64,5 @@ export default function CategoryFilter() {
           })}
         </SelectContent>
       </Select>
-    </div>
   )
 }

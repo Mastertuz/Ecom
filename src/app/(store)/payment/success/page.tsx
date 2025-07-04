@@ -68,7 +68,7 @@ async function PaymentSuccessContent({ orderId }: { orderId?: string }) {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl">
+    <div className="container mx-auto max-w-2xl">
       <Card className="text-center">
         <CardHeader>
           <div className="flex justify-center mb-4">

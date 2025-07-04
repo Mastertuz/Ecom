@@ -14,9 +14,9 @@ export default async function Home({ searchParams }: HomeProps) {
   const products = await getAllProducts(selectedCategory)
 
   return (
-    <main>
+    <>
       <SaleBanner />
-      <div className="max-w-[1536px] mx-auto my-10">
+      <div className="container mx-auto my-10">
         <div className="mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white mb-2 sm:text-xl">Товары по категориям</h1>
@@ -42,7 +42,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
         )}
       </div>
-    </main>
+    </>
   )
 }
 

@@ -37,7 +37,7 @@ export default async function ProductPage({
               src={product?.imageUrl || ""}
               alt={product.name ?? "Product image"}
               fill
-              className="object-contain max-w-2xl transition-transform duration-300 hover:scale-105"
+              className="select-none object-contain max-w-2xl transition-transform duration-300 hover:scale-105"
             />
           )}
           {isOutOfStock && (

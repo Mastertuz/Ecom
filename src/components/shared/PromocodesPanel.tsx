@@ -7,6 +7,8 @@ import EditPromoCodeDialog from "./EditPromoCodeForm";
 import DeletePromoCodeButton from "./DeletePromoCode";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 export default function PromoCodesPanel({
   promocodes,
@@ -20,7 +22,14 @@ export default function PromoCodesPanel({
     <main className="p-12 max-sm:p-2 space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <h1 className="text-2xl font-bold">Промокоды</h1>
+        <div className="space-x-2">
         <AddPromoCodeDialog />
+        <Button asChild>
+          <Link href={'/admin'}>
+          Товары
+          </Link>
+        </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="all">

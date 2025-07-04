@@ -73,7 +73,7 @@ export default function AddPromoCodeDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button >Добавить промокод</Button>
+        <Button className='cursor-pointer'>Добавить промокод</Button>
       </DialogTrigger>
 
       <DialogContent>
