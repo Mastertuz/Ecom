@@ -1,8 +1,6 @@
 import ProductCard from "@/components/shared/ProductCard"
-import { redirect } from "next/navigation"
 import { getAllProducts } from "@/actions/products.action"
 import SaleBanner from "@/components/shared/SaleBanner"
-import { auth } from "../../../auth"
 import CategoryFilter from "@/components/shared/CategoryFilter"
 
 interface HomeProps {
@@ -10,15 +8,13 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const session = await auth()
-  if (!session) redirect("/sign-in")
 
   const resolvedSearchParams = await searchParams
   const selectedCategory = resolvedSearchParams.category
   const products = await getAllProducts(selectedCategory)
 
   return (
-    <main className="">
+    <main>
       <SaleBanner />
       <div className="max-w-[1536px] mx-auto my-10">
         <div className="mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">

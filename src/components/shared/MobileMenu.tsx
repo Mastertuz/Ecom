@@ -14,7 +14,7 @@ import {
 import { Session } from "next-auth";
 
 interface MobileMenuProps {
-  session: Session;
+  session: Session | null;
   isAdmin: boolean;
   onSignOut: () => Promise<void>;
 }

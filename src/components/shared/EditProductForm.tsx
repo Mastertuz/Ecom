@@ -235,7 +235,6 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                 )}
               />
             </div>
-
             <div>
               <FormLabel className="text-sm sm:text-base">Изображение товара</FormLabel>
               {imageUrl ? (

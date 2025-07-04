@@ -5,10 +5,9 @@ import { Toaster } from "@/components/ui/sonner";
 
 
 export const metadata: Metadata = {
-  title: "Интернет-магазин с интеграцией исскуственного интеллекта",
+  title: "Интернет-магазин с интеграцией искусственного интеллекта",
   description: "Создано Василием Димитровым",
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
