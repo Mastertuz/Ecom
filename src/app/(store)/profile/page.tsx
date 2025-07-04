@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -8,8 +7,13 @@ import ProfileForm from "@/components/shared/ProfileForm"
 async function ProfilePage() {
   const session = await auth()
 
-  if (!session?.user?.id) {
-    redirect("/sign-in")
+  if (!session?.user) {
+    return (
+      <div className="container mx-auto">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-white">Профиль</h1>
+        <p className="text-lg text-muted-foreground">Пожалуйста, войдите в систему, чтобы увидеть ваш профиль.</p>
+      </div>
+    )
   }
 
   const user = await prisma.user.findUnique({
@@ -56,7 +60,6 @@ async function ProfilePage() {
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl md:text-3xl font-bold mb-6 text-white">Профиль</h1>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <ProfileForm user={user} />
